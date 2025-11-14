@@ -41,6 +41,6 @@ ne2000led.o: ne2000.c ne2000.h memcpy.h debug.h
 main.o: main.c main.h ne2000.h
 	$(COMPILE.c) $<
 
-asmsub.o: asmsub.s
+asmsub.o: asmsub.S
 
 # EOF
