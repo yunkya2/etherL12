@@ -12,7 +12,7 @@
 
 
 #include <stdio.h>
-#include <sys/dos.h>
+#include <x68k/dos.h>
 #include "main.h"
 #include "ne2000.h"
 
@@ -22,6 +22,12 @@ unsigned int irq;
 int trap_no;
 int num_of_prt;
 struct prt PRT_LIST [NPRT];
+
+// temporary heap
+char heap[1024];
+void *_HSTA = heap;
+void *_HEND = heap + 1024;
+void *_PSP;
 
 /* マルチキャスト（未対応） */
 #ifdef MULTICAST

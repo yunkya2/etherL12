@@ -87,7 +87,7 @@ extern void NeptuneIntHandler (void);
 extern void trap_entry (void);
 
 
-#include <sys/iocs.h>
+#include <x68k/iocs.h>
 #define Print _iocs_b_print
 
 #define TRAP_VECNO(n)	(0x20 + n)

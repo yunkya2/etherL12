@@ -12,7 +12,7 @@
 
 
 #include <stdio.h>
-#include <sys/dos.h>
+#include <x68k/dos.h>
 
 #include "main.h"
 #include "ne2000.h"
@@ -626,7 +626,7 @@ NeptuneIntProcess (void)
   struct ed_softc* sc = &ed_softc;
   unsigned char isr;
 
-#ifdef 0
+#if 0
   DEBUG_KBDLED (KBDLED_CAPS);
 #endif
 
@@ -663,7 +663,7 @@ NeptuneIntProcess (void)
       /* 割り込み原因 は 受信完了 または 受信エラー または 受信バッファあふれ警告*/
       if (isr & (ENISR_RX | ENISR_RX_ERR | ENISR_OVER))
 	{
-#ifdef 0
+#if 0
 	  DEBUG_KBDLED (KBDLED_ZEN | KBDLED_HIRA | KBDLED_CAPS);
 #endif
 	  /* 受信バッファがあふれちゃうぅ */
