@@ -23,36 +23,36 @@
 #define	NE_DATAPORT	0x20
 #define	NE_RESET	0x3e
 #define NE_BASEADR	0xece000	/* NE-2000 MemoryMaped Base I/O Address */
-#define	NEPTUNE_IVN	0xf9		/* Neptune-X Š„‚è‚İƒxƒNƒ^ */
+#define	NEPTUNE_IVN	0xf9		/* Neptune-X å‰²ã‚Šè¾¼ã¿ãƒ™ã‚¯ã‚¿ */
 
-#define	MEM_START	0x4000		/* NE2000 ƒ[ƒJƒ‹ƒƒ‚ƒŠæ“ªƒAƒhƒŒƒX */
-#define	MEM_END		0x8000		/* NE2000 ƒ[ƒJƒ‹ƒƒ‚ƒŠI’[ƒAƒhƒŒƒX */
-#define	MEM_SIZE	0x4000		/* NE2000 ƒ[ƒJƒ‹ƒƒ‚ƒŠƒTƒCƒY */
-#define	MEM_RING	0x4c00		/* NE2000 óMƒŠƒ“ƒOƒoƒbƒtƒ@æ“ªƒAƒhƒŒƒX */
+#define	MEM_START	0x4000		/* NE2000 ãƒ­ãƒ¼ã‚«ãƒ«ãƒ¡ãƒ¢ãƒªå…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+#define	MEM_END		0x8000		/* NE2000 ãƒ­ãƒ¼ã‚«ãƒ«ãƒ¡ãƒ¢ãƒªçµ‚ç«¯ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+#define	MEM_SIZE	0x4000		/* NE2000 ãƒ­ãƒ¼ã‚«ãƒ«ãƒ¡ãƒ¢ãƒªã‚µã‚¤ã‚º */
+#define	MEM_RING	0x4c00		/* NE2000 å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹ */
 
-#define	TX_PAGE_START	64		/* NE2000 æ“ª ‘—Mƒy[ƒW */
-#define	REC_PAGE_START	76		/* NE2000 æ“ª óMƒy[ƒW */
-#define	REC_PAGE_STOP	128		/* NE2000 I’[ óMƒy[ƒW */
-#define	TXB_CNT		2		/* NE2000 ‘—M ƒoƒbƒtƒ@” */
+#define	TX_PAGE_START	64		/* NE2000 å…ˆé ­ é€ä¿¡ãƒšãƒ¼ã‚¸ */
+#define	REC_PAGE_START	76		/* NE2000 å…ˆé ­ å—ä¿¡ãƒšãƒ¼ã‚¸ */
+#define	REC_PAGE_STOP	128		/* NE2000 çµ‚ç«¯ å—ä¿¡ãƒšãƒ¼ã‚¸ */
+#define	TXB_CNT		2		/* NE2000 é€ä¿¡ ãƒãƒƒãƒ•ã‚¡æ•° */
 
 #define	ED_PAGE_SIZE	256
 #define	ED_PAGE_MASK	256
 #define	ED_PAGE_SHIFT	8
-#define	ED_TXBUF_SIZE	6		/* NE2000 ‘—Mƒoƒbƒtƒ@ƒy[ƒW” */
+#define	ED_TXBUF_SIZE	6		/* NE2000 é€ä¿¡ãƒãƒƒãƒ•ã‚¡ãƒšãƒ¼ã‚¸æ•° */
 
 #define	ETHER_MIN_LEN	64
 #define ETHER_MAX_LEN	1518
 #define	ETHER_ADDR_LEN	6
 
 
-/* asmsub.s “à‚ÌƒTƒuƒ‹[ƒ`ƒ“ */
+/* asmsub.s å†…ã®ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ */
 extern void DI ();
 extern void EI ();
 
 
 struct ed_softc ed_softc;
 struct trans_counter trans_counter;
-unsigned char rx_buff [2048];		/* óMƒoƒbƒtƒ@ */
+unsigned char rx_buff [2048];		/* å—ä¿¡ãƒãƒƒãƒ•ã‚¡ */
 
 
 #define SELECT_PAGE_0(n)	(io_addr [E8390_CMD] = E8390_PAGE0 + n)
@@ -60,7 +60,7 @@ unsigned char rx_buff [2048];		/* óMƒoƒbƒtƒ@ */
 
 
 /*********************************************************************
-*    ‚c‚o‚W‚R‚X‚O  ƒŠƒZƒbƒg                                          *
+*    ï¼¤ï¼°ï¼˜ï¼“ï¼™ï¼  ãƒªã‚»ãƒƒãƒˆ                                          *
 *********************************************************************/
 static void
 DP8390_Reset (volatile unsigned char* baseadr)
@@ -80,7 +80,7 @@ DP8390_Reset (volatile unsigned char* baseadr)
 
 
 /************************************************
- *   ‚l‚`‚b  ƒAƒhƒŒƒXæ“¾                       *
+ *   ï¼­ï¼¡ï¼£  ã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—                       *
  ************************************************/
 int
 GetMacAddr (struct eaddr* buf)
@@ -92,7 +92,7 @@ GetMacAddr (struct eaddr* buf)
   if (!p)
     return -1;
 
-  /*** MAC ƒAƒhƒŒƒX‚ğDP8390ƒŒƒWƒXƒ^‚©‚çæ“¾ ***/
+  /*** MAC ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’DP8390ãƒ¬ã‚¸ã‚¹ã‚¿ã‹ã‚‰å–å¾— ***/
   SELECT_PAGE_1 (E8390_STOP);
 
   for (i = 0; i < 6; i++)
@@ -104,7 +104,7 @@ GetMacAddr (struct eaddr* buf)
 }
 
 /************************************************
- *   ‚l‚`‚b  ƒAƒhƒŒƒXİ’è                       *
+ *   ï¼­ï¼¡ï¼£  ã‚¢ãƒ‰ãƒ¬ã‚¹è¨­å®š                       *
  ************************************************/
 int
 SetMacAddr (const struct eaddr* data)
@@ -116,7 +116,7 @@ SetMacAddr (const struct eaddr* data)
   if (!p)
     return -1;
 
-  /*** MAC ƒAƒhƒŒƒX‚ğDP8390‚Éİ’è ***/
+  /*** MAC ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’DP8390ã«è¨­å®š ***/
   SELECT_PAGE_1 (E8390_STOP);
 
   for (i = 0; i < 6; i++)
@@ -129,7 +129,7 @@ SetMacAddr (const struct eaddr* data)
 
 
 /************************************************
- *	dst‚ª“Ç‚İ‚İ‰Â”\‚©ƒ`ƒFƒbƒN		*
+ *	dstãŒèª­ã¿è¾¼ã¿å¯èƒ½ã‹ãƒã‚§ãƒƒã‚¯		*
  ************************************************/
 static int
 read_check (unsigned short* dst)
@@ -144,7 +144,7 @@ read_check (unsigned short* dst)
 
 
 /************************************************
- *  Neptune-X ‚ğ ‚³‚ª‚µ‚Ü‚·                     *
+ *  Neptune-X ã‚’ ã•ãŒã—ã¾ã™                     *
  ************************************************/
 int
 SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq)
@@ -159,16 +159,16 @@ SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq)
 
       if (read_check ((unsigned short*) p))
 	{
-	  /* ‚·‚­‚È‚­‚Æ‚à“Ç‚İ‚±‚İ‰Â”\ */
+	  /* ã™ããªãã¨ã‚‚èª­ã¿ã“ã¿å¯èƒ½ */
 	  p [E8390_CMD] = E8390_NODMA + E8390_PAGE1 + E8390_STOP;
 	  p [0x0d * 2] = 0xff;
 	  p [E8390_CMD] = E8390_NODMA + E8390_PAGE0;
 	  in = p [EN0_COUNTER0];
 
 	  if (p [EN0_COUNTER0] != 0)
-	    continue;			/* ‚Í‚¸‚ê */
+	    continue;			/* ã¯ãšã‚Œ */
 
-	  /* NE-2000Œn ‚ç‚µ‚¢ */	/* ‚·‚²[‚¢Aè”²‚« */
+	  /* NE-2000ç³» ã‚‰ã—ã„ */	/* ã™ã”ãƒ¼ã„ã€æ‰‹æŠœã */
 	  *io_addr = p;
 	  *irq = NEPTUNE_IVN;
 	  return 0;
@@ -180,7 +180,7 @@ SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq)
 
 
 /************************************************
- * Neptune-X ƒxƒNƒ^İ’è                         *
+ * Neptune-X ãƒ™ã‚¯ã‚¿è¨­å®š                         *
  ************************************************/
 int
 TrapNeptuneVector (unsigned int irq, void* my_handler)
@@ -191,7 +191,7 @@ TrapNeptuneVector (unsigned int irq, void* my_handler)
 
 
 /************************************************
- *  Neptune-X ƒ{[ƒh‰Šú‰» ŠÖ”                 *
+ *  Neptune-X ãƒœãƒ¼ãƒ‰åˆæœŸåŒ– é–¢æ•°                 *
  ************************************************/
 int
 InitNeptune (void)
@@ -213,18 +213,18 @@ InitNeptune (void)
 
   io_addr [EN0_RCNTLO] = 0x00;
   io_addr [EN0_RCNTHI] = 0x00;
-  io_addr [EN0_IMR] = 0x00;		/* ‚·‚×‚Äƒ}ƒXƒN */
-  io_addr [EN0_ISR] = 0xff;		/* Š„‚è‚İƒXƒe[ƒ^ƒXƒŠƒZƒbƒg */
+  io_addr [EN0_IMR] = 0x00;		/* ã™ã¹ã¦ãƒã‚¹ã‚¯ */
+  io_addr [EN0_ISR] = 0xff;		/* å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒªã‚»ãƒƒãƒˆ */
   io_addr [EN0_RXCR] = E8390_RXOFF;
   io_addr [EN0_TXCR] = E8390_TXOFF;
 
 
-/* ‚d‚d‚o‚q‚n‚l‚æ‚è‚l‚`‚bƒAƒhƒŒƒX‚È‚Ç‚ğ“Ç‚İ‚İ‚Ü‚· */
+/* ï¼¥ï¼¥ï¼°ï¼²ï¼¯ï¼­ã‚ˆã‚Šï¼­ï¼¡ï¼£ã‚¢ãƒ‰ãƒ¬ã‚¹ãªã©ã‚’èª­ã¿è¾¼ã¿ã¾ã™ */
   io_addr [EN0_RCNTLO] = 32;
-  io_addr [EN0_RCNTHI] = 0;		/* “]‘—ƒTƒCƒY‚R‚QƒoƒCƒg */
+  io_addr [EN0_RCNTHI] = 0;		/* è»¢é€ã‚µã‚¤ã‚ºï¼“ï¼’ãƒã‚¤ãƒˆ */
   io_addr [EN0_RSARLO] = 0x00;
-  io_addr [EN0_RSARHI] = 0x00;		/* “à‘ ƒƒ‚ƒŠ”Ô’n‚Í‚O‚É */
-  io_addr [E8390_CMD] = E8390_RREAD + E8390_START;	/* “Ç‚İ‚İŠJn */
+  io_addr [EN0_RSARHI] = 0x00;		/* å†…è”µãƒ¡ãƒ¢ãƒªç•ªåœ°ã¯ï¼ã« */
+  io_addr [E8390_CMD] = E8390_RREAD + E8390_START;	/* èª­ã¿è¾¼ã¿é–‹å§‹ */
 
   wl = 2;
   for (i = 0; i < 32; i += 2)
@@ -233,36 +233,36 @@ InitNeptune (void)
       prom [i + 1] = io_addr [NE_DATAPORT];
 
       if (prom [i + 0] != prom [i + 1])
-	wl = 1;		/* ‚WƒrƒbƒgƒJ[ƒh(NE-1000) */
+	wl = 1;		/* ï¼˜ãƒ“ãƒƒãƒˆã‚«ãƒ¼ãƒ‰(NE-1000) */
     }
 
   if (wl == 2)
-    {			/* ‚P‚UƒrƒbƒgƒJ[ƒh(NE-2000) */
+    {			/* ï¼‘ï¼–ãƒ“ãƒƒãƒˆã‚«ãƒ¼ãƒ‰(NE-2000) */
       io_addr [EN0_DCFG] = 0x49;	/* set word-transfer mode */
 
       for (i = 0; i < 16; i++)
 	prom [i] = prom [i + i];
     }
   else
-    {			/* ‚WƒrƒbƒgƒJ[ƒh(NE-1000) */
+    {			/* ï¼˜ãƒ“ãƒƒãƒˆã‚«ãƒ¼ãƒ‰(NE-1000) */
 #if 0
       Print("\nNE1000\n\n");
 #endif
-      return -1;	/* ¡‰ñ‚ÍNE-1000‚ÉŠÖ‚µ‚Ä‚Í–³‹ */
+      return -1;	/* ä»Šå›ã¯NE-1000ã«é–¢ã—ã¦ã¯ç„¡è¦– */
     }
 
 #if 0
   {
     unsigned char buf[32];
     sprint_eaddr (buf, prom);
-    Print ("\nƒ{[ƒh‚Ì‚l‚`‚bƒAƒhƒŒƒX‚ÍA");
+    Print ("\nãƒœãƒ¼ãƒ‰ã®ï¼­ï¼¡ï¼£ã‚¢ãƒ‰ãƒ¬ã‚¹ã¯ã€");
     Print (buf);
-    Print ("‚Å‚·B\n");
+    Print ("ã§ã™ã€‚\n");
   }
 #endif
 
 
-  /*** MAC ƒAƒhƒŒƒX‚ğDP8390‚Éİ’è ***/
+  /*** MAC ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’DP8390ã«è¨­å®š ***/
   SELECT_PAGE_1 (E8390_STOP);
 
   for (i = 0; i < 6; i++)
@@ -271,7 +271,7 @@ InitNeptune (void)
     }
 
 
-  /* ‘—Mƒtƒ‰ƒO‰Šú‰» */
+  /* é€ä¿¡ãƒ•ãƒ©ã‚°åˆæœŸåŒ– */
   ed_softc.xmit_busy = 0;
   ed_softc.txb_inuse = 0;
   ed_softc.txb_new = 0;
@@ -281,17 +281,17 @@ InitNeptune (void)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  io_addr [EN0_DCFG] = 0x49;	/* ‚P‚Uƒrƒbƒg“]‘—Aƒ‹[ƒvƒoƒbƒN‰ğœAFIFOƒXƒŒƒbƒVƒ‡ƒ‹ƒh‚WƒoƒCƒg */
+  io_addr [EN0_DCFG] = 0x49;	/* ï¼‘ï¼–ãƒ“ãƒƒãƒˆè»¢é€ã€ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯è§£é™¤ã€FIFOã‚¹ãƒ¬ãƒƒã‚·ãƒ§ãƒ«ãƒ‰ï¼˜ãƒã‚¤ãƒˆ */
 
 
-  /* ƒŠƒ‚[ƒgƒJƒEƒ“ƒ^ƒŠƒZƒbƒg*/
+  /* ãƒªãƒ¢ãƒ¼ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒªã‚»ãƒƒãƒˆ*/
   io_addr [EN0_RCNTLO] = 0x00;
   io_addr [EN0_RCNTHI] = 0x00;
 
-  /* óMƒpƒPƒbƒg‚ğƒoƒbƒtƒ@ƒŠƒ“ƒO‚µ‚È‚¢ */
+  /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆã‚’ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã—ãªã„ */
   io_addr [EN0_RXCR] = E8390_RXOFF;
 
-  /* ‘—M‚µ‚È‚¢ */
+  /* é€ä¿¡ã—ãªã„ */
   io_addr [EN0_TXCR] = E8390_TXOFF;
 
 
@@ -301,8 +301,8 @@ InitNeptune (void)
   io_addr [EN0_STOPPG] = REC_PAGE_STOP;
   io_addr [EN0_BOUNDARY] = REC_PAGE_START;
 
-  io_addr [EN0_ISR] = 0xff;		/* Š„‚è‚İƒXƒe[ƒ^ƒXƒŠƒZƒbƒg */
-  io_addr [EN0_IMR] = 0x00;		/* Š„‚è‚İ‹Ö~ */
+  io_addr [EN0_ISR] = 0xff;		/* å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒªã‚»ãƒƒãƒˆ */
+  io_addr [EN0_IMR] = 0x00;		/* å‰²ã‚Šè¾¼ã¿ç¦æ­¢ */
 
   SELECT_PAGE_1 (E8390_NODMA + E8390_STOP);
 
@@ -310,22 +310,22 @@ InitNeptune (void)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  /* ƒpƒPƒbƒgóM‹–‰Â • ƒuƒ[ƒhƒLƒƒƒXƒgƒpƒPƒbƒg‹–‰Â */
+  /* ãƒ‘ã‚±ãƒƒãƒˆå—ä¿¡è¨±å¯ ï¼† ãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆãƒ‘ã‚±ãƒƒãƒˆè¨±å¯ */
   io_addr [EN0_RXCR] = 0x04;
 
-  /* ‘—M‹–‰Â */
+  /* é€ä¿¡è¨±å¯ */
   io_addr [EN0_TXCR] = 0x00;
 
-  SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* “®ìŠJn */
+  SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* å‹•ä½œé–‹å§‹ */
 
-  ed_softc.semaphore = 0;		/* o—Í‚ÍƒAƒNƒeƒBƒu‚¶‚á‚È‚¢ */
+  ed_softc.semaphore = 0;		/* å‡ºåŠ›ã¯ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã˜ã‚ƒãªã„ */
 
   return 0;
 }
 
 
 /************************************************
- *  Neptune-X ƒhƒ‰ƒCƒo‰Šú‰»   ŠÖ”             *
+ *  Neptune-X ãƒ‰ãƒ©ã‚¤ãƒåˆæœŸåŒ–   é–¢æ•°             *
  ************************************************/
 #ifdef ENABLE_EDINIT
 static int
@@ -334,7 +334,7 @@ EdInit (struct ed_softc* sc)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  /* ‘—Mƒtƒ‰ƒO‰Šú‰» */
+  /* é€ä¿¡ãƒ•ãƒ©ã‚°åˆæœŸåŒ– */
   sc->xmit_busy = 0;
   sc->txb_inuse = 0;
   sc->txb_new = 0;
@@ -342,16 +342,16 @@ EdInit (struct ed_softc* sc)
 
   sc->next_packet = REC_PAGE_START + 1;
 
-  io_addr [EN0_DCFG] = 0x49;	/* ‚P‚Uƒrƒbƒg“]‘—Aƒ‹[ƒvƒoƒbƒN‰ğœAFIFOƒXƒŒƒbƒVƒ‡ƒ‹ƒh‚WƒoƒCƒg */
+  io_addr [EN0_DCFG] = 0x49;	/* ï¼‘ï¼–ãƒ“ãƒƒãƒˆè»¢é€ã€ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯è§£é™¤ã€FIFOã‚¹ãƒ¬ãƒƒã‚·ãƒ§ãƒ«ãƒ‰ï¼˜ãƒã‚¤ãƒˆ */
 
-  /* ƒŠƒ‚[ƒgƒJƒEƒ“ƒ^ƒŠƒZƒbƒg*/
+  /* ãƒªãƒ¢ãƒ¼ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒªã‚»ãƒƒãƒˆ*/
   io_addr [EN0_RCNTLO] = 0x00;
   io_addr [EN0_RCNTHI] = 0x00;
 
-  /* óMƒpƒPƒbƒg‚ğƒoƒbƒtƒ@ƒŠƒ“ƒO‚µ‚È‚¢ */
+  /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆã‚’ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã—ãªã„ */
   io_addr [EN0_RXCR] = E8390_RXOFF;
 
-  /* ‘—M‚µ‚È‚¢ */
+  /* é€ä¿¡ã—ãªã„ */
   io_addr [EN0_TXCR] = E8390_TXOFF;
 
 
@@ -361,9 +361,9 @@ EdInit (struct ed_softc* sc)
   io_addr [EN0_STOPPG) = REC_PAGE_STOP;
   io_addr [EN0_BOUNDARY) = REC_PAGE_START;
 
-  io_addr [EN0_ISR) = 0xff;		/* Š„‚è‚İƒXƒe[ƒ^ƒXƒŠƒZƒbƒg */
+  io_addr [EN0_ISR) = 0xff;		/* å‰²ã‚Šè¾¼ã¿ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒªã‚»ãƒƒãƒˆ */
   io_addr [EN0_IMR] = ENISR_RX + ENISR_TX + ENISR_RX_ERR + ENISR_TX_ERR + ENISR_OVER;
-					/* Š„‚è‚İ‹–‰Â */
+					/* å‰²ã‚Šè¾¼ã¿è¨±å¯ */
 
   SELECT_PAGE_1 (E8390_NODMA + E8390_STOP);
 
@@ -371,13 +371,13 @@ EdInit (struct ed_softc* sc)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  /* ƒpƒPƒbƒgóM‹–‰Â • ƒuƒ[ƒhƒLƒƒƒXƒgƒpƒPƒbƒg‹–‰Â */
+  /* ãƒ‘ã‚±ãƒƒãƒˆå—ä¿¡è¨±å¯ ï¼† ãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆãƒ‘ã‚±ãƒƒãƒˆè¨±å¯ */
   io_addr [EN0_RXCR] = 0x04;
 
-  /* ‘—M‹–‰Â */
+  /* é€ä¿¡è¨±å¯ */
   io_addr [EN0_TXCR] = 0x00;
 
-  SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* “®ìŠJn */
+  SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* å‹•ä½œé–‹å§‹ */
 
   return 0;
 }
@@ -388,7 +388,7 @@ EdInit (struct ed_softc* sc)
 
 
 /************************************************
- *  Neptune-X NE2000ƒpƒPƒbƒgƒoƒbƒtƒ@‚©‚ç“]‘—    *
+ *  Neptune-X NE2000ãƒ‘ã‚±ãƒƒãƒˆãƒãƒƒãƒ•ã‚¡ã‹ã‚‰è»¢é€    *
  ************************************************/
 static void
 EdPioReadMem (unsigned short src, unsigned char* dst, unsigned int len)
@@ -412,7 +412,7 @@ EdPioReadMem (unsigned short src, unsigned char* dst, unsigned int len)
   /* Set remote DMA read. */
   io_addr [E8390_CMD] = E8390_RREAD + E8390_PAGE0 + E8390_START;
 
-  /* NE2000óMƒoƒbƒtƒ@‚©‚ç“Ç‚İ‚İ */
+  /* NE2000å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰èª­ã¿è¾¼ã¿ */
   insw ((volatile unsigned short*) &io_addr [NE_DATAPORT],
 				(unsigned short*) dst, len);
 
@@ -421,7 +421,7 @@ EdPioReadMem (unsigned short src, unsigned char* dst, unsigned int len)
 
 
 /************************************************
- *  Neptune-X NE2000óMƒŠƒ“ƒOƒoƒbƒtƒ@‚©‚ç“]‘—  *
+ *  Neptune-X NE2000å—ä¿¡ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰è»¢é€  *
  ************************************************/
 static int
 EdRingToMem (unsigned short src, unsigned char* dst, unsigned int len)
@@ -444,7 +444,7 @@ EdRingToMem (unsigned short src, unsigned char* dst, unsigned int len)
 
 
 /************************************************
- *  Neptune-X  óMƒpƒPƒbƒg í•Ê”z‘— ŠÖ”       *
+ *  Neptune-X  å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆ ç¨®åˆ¥é…é€ é–¢æ•°       *
  ************************************************/
 static int
 SendToPrt (int type, int len)
@@ -463,27 +463,27 @@ SendToPrt (int type, int len)
 
 
 /************************************************
- *  Neptune-X ƒpƒPƒbƒg‚Æ‚Á‚¿‚á‚¤ ŠÖ”           *
+ *  Neptune-X ãƒ‘ã‚±ãƒƒãƒˆã¨ã£ã¡ã‚ƒã† é–¢æ•°           *
  ************************************************/
 static void
 EdGetPacket (struct ed_softc* sc,
-		unsigned short buf,		/* NE2000 ƒpƒPƒbƒgƒoƒbƒtƒ@æ“ªƒAƒhƒŒƒX */
-		unsigned int len)		/* ã‚Ì‚È‚ª‚³ */
+		unsigned short buf,		/* NE2000 ãƒ‘ã‚±ãƒƒãƒˆãƒãƒƒãƒ•ã‚¡å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+		unsigned int len)		/* ä¸Šã®ãªãŒã• */
 {
   int type;
 
-  /* NE2000ƒoƒbƒtƒ@‚©‚çóMƒoƒbƒtƒ@ƒƒ‚ƒŠ‚ÖƒpƒPƒbƒg“]‘— */
+  /* NE2000ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰å—ä¿¡ãƒãƒƒãƒ•ã‚¡ãƒ¡ãƒ¢ãƒªã¸ãƒ‘ã‚±ãƒƒãƒˆè»¢é€ */
   if (EdRingToMem (buf, rx_buff, len) == 0)
     {
       type = rx_buff [12] * 256 + rx_buff [13];
-      SendToPrt (type, len);	/* ƒpƒPƒbƒgƒ^ƒCƒv‚Åƒf[ƒ^•ª•Ê */
+      SendToPrt (type, len);	/* ãƒ‘ã‚±ãƒƒãƒˆã‚¿ã‚¤ãƒ—ã§ãƒ‡ãƒ¼ã‚¿åˆ†åˆ¥ */
       return;
     }
 }
 
 
 /************************************************
- *  Neptune-X óMŠ„‚è‚İˆ— ŠÖ”             *
+ *  Neptune-X å—ä¿¡å‰²ã‚Šè¾¼ã¿å‡¦ç† é–¢æ•°             *
  ************************************************/
 static inline void
 EdRint (struct ed_softc* sc)
@@ -499,27 +499,27 @@ EdRint (struct ed_softc* sc)
 
   while (sc->next_packet != io_addr [EN1_CURPAG])
     {
-      /* óMƒoƒbƒtƒ@ƒuƒƒbƒN‚ÌƒAƒhƒŒƒXŒvZ */
+      /* å—ä¿¡ãƒãƒƒãƒ•ã‚¡ãƒ–ãƒ­ãƒƒã‚¯ã®ã‚¢ãƒ‰ãƒ¬ã‚¹è¨ˆç®— */
       packet_ptr = MEM_RING
 		 + (sc->next_packet - REC_PAGE_START) * ED_PAGE_SIZE;
 
-      /* NE2000ƒoƒbƒtƒ@‚©‚çƒpƒPƒbƒgƒwƒbƒ_æ“¾ */
+      /* NE2000ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰ãƒ‘ã‚±ãƒƒãƒˆãƒ˜ãƒƒãƒ€å–å¾— */
       EdPioReadMem (packet_ptr, (unsigned char*) &packet_hdr, sizeof (packet_hdr));
       trans_counter.send_byte += sizeof (packet_hdr);
 
       if (packet_hdr.rsr & 0x1e)
 	return;
 
-      /* ƒpƒPƒbƒgƒŒƒ“ƒOƒXæ“¾ */
+      /* ãƒ‘ã‚±ãƒƒãƒˆãƒ¬ãƒ³ã‚°ã‚¹å–å¾— */
       len = packet_hdr.count_h << 8
 	  | packet_hdr.count_l;
 
-      /* ƒpƒPƒbƒg‚ªÅ‘å’·‚ğ‰z‚¦‚½‚çc */
+      /* ãƒ‘ã‚±ãƒƒãƒˆãŒæœ€å¤§é•·ã‚’è¶ŠãˆãŸã‚‰â€¦ */
       if (len > ETHER_MAX_LEN)
 	{
 	  len &= ED_PAGE_SIZE - 1;
 
-	  /* ƒŠƒ“ƒOƒoƒbƒtƒ@‘Îô */
+	  /* ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡å¯¾ç­– */
 	  if (packet_hdr.next_packet >= sc->next_packet)
 	    len += (packet_hdr.next_packet - sc->next_packet) * ED_PAGE_SIZE;
 	  else
@@ -530,7 +530,7 @@ EdRint (struct ed_softc* sc)
       if ((packet_hdr.next_packet >= REC_PAGE_START)
        && (packet_hdr.next_packet <  REC_PAGE_STOP))
 	{
-	  /* óMƒpƒPƒbƒg‚¢‚½‚¾‚« */
+	  /* å—ä¿¡ãƒ‘ã‚±ãƒƒãƒˆã„ãŸã ã */
 	  unsigned int rlen = len - sizeof (packet_hdr);
 
 	  EdGetPacket (sc, packet_ptr + sizeof (packet_hdr), rlen);
@@ -542,7 +542,7 @@ EdRint (struct ed_softc* sc)
 	  return;
 	}
 
-      /* ‚Â‚¬‚ÌóMƒuƒƒbƒN‚Ö */
+      /* ã¤ãã®å—ä¿¡ãƒ–ãƒ­ãƒƒã‚¯ã¸ */
       sc->next_packet = packet_hdr.next_packet;
 
       /*
@@ -568,7 +568,7 @@ EdRint (struct ed_softc* sc)
 
 
 /************************************************
- *  Neptune-X ‘—Mƒoƒbƒtƒ@“à—e‚Ì‘—M  ŠÖ”      *
+ *  Neptune-X é€ä¿¡ãƒãƒƒãƒ•ã‚¡å†…å®¹ã®é€ä¿¡  é–¢æ•°      *
  ************************************************/
 static inline void
 EdXmit (struct ed_softc* sc)
@@ -582,9 +582,9 @@ EdXmit (struct ed_softc* sc)
 
   if (sc->xmit_busy)
     return;
-  sc->xmit_busy = 1;			/* ‘—M’† */
+  sc->xmit_busy = 1;			/* é€ä¿¡ä¸­ */
 
-  len = sc->txb_len [sc->txb_next_tx];	/* ƒpƒPƒbƒg’· ‘ã“ü */
+  len = sc->txb_len [sc->txb_next_tx];	/* ãƒ‘ã‚±ãƒƒãƒˆé•· ä»£å…¥ */
 
   while (sc->semaphore)
     {
@@ -592,33 +592,33 @@ EdXmit (struct ed_softc* sc)
     }
   sc->semaphore = 1;
 
-  /* ‘—Mˆ—’†‚ÍŠ„‚è‚İ‹Ö~ NE2000ƒŒƒWƒXƒ^g—pŒ Šl“¾ */
+  /* é€ä¿¡å‡¦ç†ä¸­ã¯å‰²ã‚Šè¾¼ã¿ç¦æ­¢ NE2000ãƒ¬ã‚¸ã‚¹ã‚¿ä½¿ç”¨æ¨©ç²å¾— */
   DI ();
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
-  /* ‘—Mƒoƒbƒtƒ@ƒXƒ^[ƒgƒy[ƒWİ’è */
+  /* é€ä¿¡ãƒãƒƒãƒ•ã‚¡ã‚¹ã‚¿ãƒ¼ãƒˆãƒšãƒ¼ã‚¸è¨­å®š */
   io_addr [EN0_TPSR] = TX_PAGE_START + sc->txb_next_tx * ED_TXBUF_SIZE;
 
-  /* ‘—M’· İ’è */
+  /* é€ä¿¡é•· è¨­å®š */
   io_addr [EN0_TCNTLO] = len & 0xff;
   io_addr [EN0_TCNTHI] = len >> 8;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_TRANS + E8390_START);
 
-  /* Š„‚è‚İ‹–‰Â */
+  /* å‰²ã‚Šè¾¼ã¿è¨±å¯ */
   EI ();
 
   sc->semaphore = 0;
 
-  /* –¢‘—Mƒoƒbƒtƒ@ƒuƒƒbƒN‚ğ‚Â‚¬‚ÌƒuƒƒbƒN‚Ö */
+  /* æœªé€ä¿¡ãƒãƒƒãƒ•ã‚¡ãƒ–ãƒ­ãƒƒã‚¯ã‚’ã¤ãã®ãƒ–ãƒ­ãƒƒã‚¯ã¸ */
   if (++sc->txb_next_tx == TXB_CNT)
     sc->txb_next_tx = 0;
 }
 
 
 /************************************************
- *  Neptune-X Š„‚è‚İˆ— ŠÖ” (ne.s‚©‚ç)      *
+ *  Neptune-X å‰²ã‚Šè¾¼ã¿å‡¦ç† é–¢æ•° (ne.sã‹ã‚‰)      *
  ************************************************/
 void
 NeptuneIntProcess (void)
@@ -632,41 +632,41 @@ NeptuneIntProcess (void)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
-  isr = io_addr [EN0_ISR];		/* Š„‚è‚İŒ´ˆö‚ğæ“¾ */
+  isr = io_addr [EN0_ISR];		/* å‰²ã‚Šè¾¼ã¿åŸå› ã‚’å–å¾— */
 
   if (!isr)
-    return;	/* ‚È‚É‚à‚È‚¢‚¼H */
+    return;	/* ãªã«ã‚‚ãªã„ãï¼Ÿ */
 
-  for (; ; )	/* ‹ƒ‚¢‚Ä‚¢‚éi‚§ */
+  for (; ; )	/* æ³£ã„ã¦ã„ã‚‹ï¼ˆã‰ */
     {
-      /* Š„‚è‚İŒ´ˆö‚ğ ƒŠƒZƒbƒg‚µ‚Ü‚· */
+      /* å‰²ã‚Šè¾¼ã¿åŸå› ã‚’ ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ */
       io_addr [EN0_ISR] = isr;
 
-      /* Š„‚è‚İŒ´ˆö ‚Í ‘—MŠ®—¹ ‚Ü‚½‚Í ‘—MƒGƒ‰[ */
+      /* å‰²ã‚Šè¾¼ã¿åŸå›  ã¯ é€ä¿¡å®Œäº† ã¾ãŸã¯ é€ä¿¡ã‚¨ãƒ©ãƒ¼ */
       if (isr & (ENISR_TX | ENISR_TX_ERR))
 	{
 #ifdef DEBUG_INT
 	  unsigned char t;
-	  t = io_addr [EN0_NCR];	/* Õ“Ë‰ñ” */
-	  t = io_addr [EN0_TSR];	/* ‘—MƒXƒe[ƒ^ƒX */
+	  t = io_addr [EN0_NCR];	/* è¡çªå›æ•° */
+	  t = io_addr [EN0_TSR];	/* é€ä¿¡ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ */
 
-	  Print ((isr & ENISR_TX_ERR) ? "Œ´ˆö:‰ßèÕ“ËorFIFOƒAƒ“ƒ_[ƒ‰ƒ“\r\n"	/* ‘—MƒGƒ‰[”­¶ */
-				      : "Œ´ˆö:‘—MŠ®—¹\r\n");
+	  Print ((isr & ENISR_TX_ERR) ? "åŸå› :éå‰°è¡çªorFIFOã‚¢ãƒ³ãƒ€ãƒ¼ãƒ©ãƒ³\r\n"	/* é€ä¿¡ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿ */
+				      : "åŸå› :é€ä¿¡å®Œäº†\r\n");
 #endif
 
-	  /* ‘—MŠ®—¹ ‚Å‚à ‘—MƒGƒ‰[‚Å‚à */
-	  sc->xmit_busy = 0;		/* ƒZƒ}ƒtƒH‰ğ•ú */
+	  /* é€ä¿¡å®Œäº† ã§ã‚‚ é€ä¿¡ã‚¨ãƒ©ãƒ¼ã§ã‚‚ */
+	  sc->xmit_busy = 0;		/* ã‚»ãƒãƒ•ã‚©è§£æ”¾ */
 	  sc->txb_inuse--;
-	  EdXmit (sc);			/* ‘—M */
+	  EdXmit (sc);			/* é€ä¿¡ */
 	}
 
-      /* Š„‚è‚İŒ´ˆö ‚Í óMŠ®—¹ ‚Ü‚½‚Í óMƒGƒ‰[ ‚Ü‚½‚Í óMƒoƒbƒtƒ@‚ ‚Ó‚êŒx*/
+      /* å‰²ã‚Šè¾¼ã¿åŸå›  ã¯ å—ä¿¡å®Œäº† ã¾ãŸã¯ å—ä¿¡ã‚¨ãƒ©ãƒ¼ ã¾ãŸã¯ å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã‚ãµã‚Œè­¦å‘Š*/
       if (isr & (ENISR_RX | ENISR_RX_ERR | ENISR_OVER))
 	{
 #ifdef 0
 	  DEBUG_KBDLED (KBDLED_ZEN | KBDLED_HIRA | KBDLED_CAPS);
 #endif
-	  /* óMƒoƒbƒtƒ@‚ª‚ ‚Ó‚ê‚¿‚á‚¤‚£ */
+	  /* å—ä¿¡ãƒãƒƒãƒ•ã‚¡ãŒã‚ãµã‚Œã¡ã‚ƒã†ã… */
 	  if (isr & ENISR_OVER)
 	    EDINIT (sc);
 	  else
@@ -677,7 +677,7 @@ NeptuneIntProcess (void)
 	      else if (isr & ENISR_RX)
 		;
 #endif
-	      EdRint (sc);		/* óMˆ— */
+	      EdRint (sc);		/* å—ä¿¡å‡¦ç† */
 	    }
 	}
 
@@ -701,7 +701,7 @@ NeptuneIntProcess (void)
 
 
 /************************************************
- *  Neptune-X NE2000ƒpƒPƒbƒgƒoƒbƒtƒ@‚Ö“]‘—      *
+ *  Neptune-X NE2000ãƒ‘ã‚±ãƒƒãƒˆãƒãƒƒãƒ•ã‚¡ã¸è»¢é€      *
  ************************************************/
 static void
 EdPioWriteMem (const unsigned char* src, unsigned short int dst, unsigned int len)
@@ -728,15 +728,15 @@ EdPioWriteMem (const unsigned char* src, unsigned short int dst, unsigned int le
   /* Set remote DMA write. */
   io_addr [E8390_CMD] = E8390_RWRITE + E8390_PAGE0 + E8390_START;
 
-  /* NE2000‘—Mƒoƒbƒtƒ@‚Ö‘‚«‚İ */
+  /* NE2000é€ä¿¡ãƒãƒƒãƒ•ã‚¡ã¸æ›¸ãè¾¼ã¿ */
   outsw ((volatile unsigned short*) &io_addr [NE_DATAPORT],
 				(const unsigned short*) src, len);
 
 
 #ifdef WAIT_AFTER_WRITEMEM
-  /* ƒEƒFƒCƒg */
+  /* ã‚¦ã‚§ã‚¤ãƒˆ */
   {
-    int maxwait = 100;	/* about 120us‚ç‚µ‚¢ */
+    int maxwait = 100;	/* about 120usã‚‰ã—ã„ */
 
     while ((io_addr [EN0_ISR] & ENISR_RDC) != ENISR_RDC && --maxwait)
       /* loop */;
@@ -751,7 +751,7 @@ EdPioWriteMem (const unsigned char* src, unsigned short int dst, unsigned int le
 
 
 /************************************************
- *  Neptune-X ‘—Mˆ— ŠÖ”                     *
+ *  Neptune-X é€ä¿¡å‡¦ç† é–¢æ•°                     *
  ************************************************/
 static int
 EdStart (unsigned int len, const unsigned char* data)
@@ -765,8 +765,8 @@ EdStart (unsigned int len, const unsigned char* data)
   DEBUG_KBDLED (KBDLED_ROMA);
 #endif
 
-  /* ‘—Mƒoƒbƒtƒ@‚ª“ñ‚Â‚Æ‚à–„‚Ü‚Á‚Ä‚¢‚éê‡‚ÍA */
-  /* ‘—M‚ğŠJn‚µ‚Äƒoƒbƒtƒ@‚ª‹ó‚­‚Ü‚Å‘Ò‚Â	*/
+  /* é€ä¿¡ãƒãƒƒãƒ•ã‚¡ãŒäºŒã¤ã¨ã‚‚åŸ‹ã¾ã£ã¦ã„ã‚‹å ´åˆã¯ã€ */
+  /* é€ä¿¡ã‚’é–‹å§‹ã—ã¦ãƒãƒƒãƒ•ã‚¡ãŒç©ºãã¾ã§å¾…ã¤	*/
   while (sc->txb_inuse == TXB_CNT)
     EdXmit (sc);
 
@@ -776,13 +776,13 @@ EdStart (unsigned int len, const unsigned char* data)
     }
   sc->semaphore = 1;
 
-  /* ‘—MƒuƒƒbƒN‚Ìæ“ªƒoƒbƒtƒ@ƒƒ‚ƒŠƒAƒhƒŒƒX‚ğŒvZ */
+  /* é€ä¿¡ãƒ–ãƒ­ãƒƒã‚¯ã®å…ˆé ­ãƒãƒƒãƒ•ã‚¡ãƒ¡ãƒ¢ãƒªã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’è¨ˆç®— */
   buffer = MEM_START + (sc->txb_new * ED_TXBUF_SIZE * ED_PAGE_SIZE);
 
-  /* ‘—Mˆ—’†‚ÍŠ„‚è‚İ‹Ö~ NE2000ƒŒƒWƒXƒ^g—pŒ Šl“¾ */
+  /* é€ä¿¡å‡¦ç†ä¸­ã¯å‰²ã‚Šè¾¼ã¿ç¦æ­¢ NE2000ãƒ¬ã‚¸ã‚¹ã‚¿ä½¿ç”¨æ¨©ç²å¾— */
   DI ();
 
-  /* –{‘Ì‘—Mƒoƒbƒtƒ@‚©‚ç‚m‚d‚Q‚O‚O‚Oƒoƒbƒtƒ@‚Ö“]‘— */
+  /* æœ¬ä½“é€ä¿¡ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰ï¼®ï¼¥ï¼’ï¼ï¼ï¼ãƒãƒƒãƒ•ã‚¡ã¸è»¢é€ */
   EdPioWriteMem (data, buffer, len);
   trans_counter.send_byte += len;
 
@@ -793,22 +793,22 @@ EdStart (unsigned int len, const unsigned char* data)
   sc->txb_len [sc->txb_new]
 	= (len > ETHER_MIN_LEN) ? len : ETHER_MIN_LEN;
 
-  sc->txb_inuse++;			/* ‚PƒuƒƒbƒNg—p’†‚Æ‰ÁZ‚µ‚Ü‚· */
+  sc->txb_inuse++;			/* ï¼‘ãƒ–ãƒ­ãƒƒã‚¯ä½¿ç”¨ä¸­ã¨åŠ ç®—ã—ã¾ã™ */
 
-  /* ‘—Mƒoƒbƒtƒ@ ‹ó‚«ƒuƒƒbƒN‚ğ‚Â‚¬‚ÌƒuƒƒbƒN‚Ö */
+  /* é€ä¿¡ãƒãƒƒãƒ•ã‚¡ ç©ºããƒ–ãƒ­ãƒƒã‚¯ã‚’ã¤ãã®ãƒ–ãƒ­ãƒƒã‚¯ã¸ */
   if (++sc->txb_new == TXB_CNT)
     sc->txb_new = 0;
 
-  /* ‘—M’†‚Å‚È‚¯‚ê‚ÎA‘—M‚·‚é */
+  /* é€ä¿¡ä¸­ã§ãªã‘ã‚Œã°ã€é€ä¿¡ã™ã‚‹ */
   if (sc->xmit_busy == 0)
-    EdXmit (sc);			/* ‘—M */
+    EdXmit (sc);			/* é€ä¿¡ */
 
   return 0;
 }
 
 
 /************************************************
- *  Neptune-X ƒpƒPƒbƒg‘—M ŠÖ” (ne.s‚©‚ç)      *
+ *  Neptune-X ãƒ‘ã‚±ãƒƒãƒˆé€ä¿¡ é–¢æ•° (ne.sã‹ã‚‰)      *
  ************************************************/
 int
 SendPacket (int len, const unsigned char* data)
@@ -820,11 +820,11 @@ SendPacket (int len, const unsigned char* data)
   if (len < 1)
     return 0;
   if (len > 1514)		/* 6 + 6 + 2 + 1500 */
-    return -1;			/* ƒGƒ‰[ */
+    return -1;			/* ã‚¨ãƒ©ãƒ¼ */
 
   if (EdStart (len, data) !=0)
     {
-      DEBUG_PRINTF (("SendPacket()‚É‚ÄEdStart()¸”s\r\n"));
+      DEBUG_PRINTF (("SendPacket()ã«ã¦EdStart()å¤±æ•—\r\n"));
       return -1;
     }
 
@@ -835,7 +835,7 @@ SendPacket (int len, const unsigned char* data)
 
 
 /************************************************
- *  Neptune-X Š„‚è‚İ‹–‰ÂA•s‹–‰Âİ’è ŠÖ”     *
+ *  Neptune-X å‰²ã‚Šè¾¼ã¿è¨±å¯ã€ä¸è¨±å¯è¨­å®š é–¢æ•°     *
  ************************************************/
 int
 SetPacketReception (int i)
@@ -845,7 +845,7 @@ SetPacketReception (int i)
 
   if (i)
     {
-      /* Š„‚è‚İ‹–‰Â */
+      /* å‰²ã‚Šè¾¼ã¿è¨±å¯ */
 #if 0
     io_addr [EN0_IMR] =		   ENISR_TX		   + ENISR_TX_ERR + ENISR_OVER;
 #else
@@ -853,7 +853,7 @@ SetPacketReception (int i)
 #endif
     }
   else
-    io_addr [EN0_IMR] = 0x00;		/* Š„‚è‚İ‹Ö~ */
+    io_addr [EN0_IMR] = 0x00;		/* å‰²ã‚Šè¾¼ã¿ç¦æ­¢ */
 
   return 0;
 }

@@ -155,12 +155,12 @@ struct statistics {
 
 
 /*
- *  î•ñ‚Ì‹l‚ß‡‚í‚¹iŠeó‘Ô•Û‘¶\‘¢‘Ìj
+ *  æƒ…å ±ã®è©°ã‚åˆã‚ã›ï¼ˆå„çŠ¶æ…‹ä¿å­˜æ§‹é€ ä½“ï¼‰
  */
 struct ed_softc {
-  unsigned char xmit_busy;		/* ‘—M’†ƒtƒ‰ƒO */
-  unsigned char txb_cnt;		/* ‘—Mƒoƒbƒtƒ@” */
-  unsigned char txb_inuse;		/* Œ»İg—p’†‚Ì‘—Mƒoƒbƒtƒ@ƒiƒ“ƒo[ */
+  unsigned char xmit_busy;		/* é€ä¿¡ä¸­ãƒ•ãƒ©ã‚° */
+  unsigned char txb_cnt;		/* é€ä¿¡ãƒãƒƒãƒ•ã‚¡æ•° */
+  unsigned char txb_inuse;		/* ç¾åœ¨ä½¿ç”¨ä¸­ã®é€ä¿¡ãƒãƒƒãƒ•ã‚¡ãƒŠãƒ³ãƒãƒ¼ */
 
   unsigned char txb_new;		/* pointer to where new buffer will be added */
   unsigned char txb_next_tx;		/* pointer to next buffer ready to xmit */
@@ -172,7 +172,7 @@ struct ed_softc {
 
 
 /*
- * ‘—óMƒJƒEƒ“ƒ^
+ * é€å—ä¿¡ã‚«ã‚¦ãƒ³ã‚¿
  */
 struct trans_counter {
   unsigned int send_byte;

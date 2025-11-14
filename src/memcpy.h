@@ -1,4 +1,4 @@
-/* ether_ne.sys —pƒƒ‚ƒŠƒRƒs[ƒ‹[ƒ`ƒ“ */
+/* ether_ne.sys ç”¨ãƒ¡ãƒ¢ãƒªã‚³ãƒ”ãƒ¼ãƒ«ãƒ¼ãƒãƒ³ */
 
 #ifndef MEMCPY_H
 #define MEMCPY_H
@@ -6,7 +6,7 @@
 #include <sys/iocs.h>
 
 
-/* ƒf[ƒ^ƒ|[ƒg‚©‚çƒ[ƒh’PˆÊ“Ç‚Ýž‚Ý */
+/* ãƒ‡ãƒ¼ã‚¿ãƒãƒ¼ãƒˆã‹ã‚‰ãƒ¯ãƒ¼ãƒ‰å˜ä½èª­ã¿è¾¼ã¿ */
 static __inline void
 insw (volatile unsigned short* port, unsigned short* dst, unsigned int len)
 {
@@ -55,7 +55,7 @@ insw (volatile unsigned short* port, unsigned short* dst, unsigned int len)
 }
 
 
-/* ƒf[ƒ^ƒ|[ƒg‚Öƒ[ƒh’PˆÊ‘‚«ž‚Ý */
+/* ãƒ‡ãƒ¼ã‚¿ãƒãƒ¼ãƒˆã¸ãƒ¯ãƒ¼ãƒ‰å˜ä½æ›¸ãè¾¼ã¿ */
 static __inline void
 outsw (volatile unsigned short* port, const unsigned short* src, unsigned int len)
 {

@@ -1,7 +1,7 @@
 # Makefile for ether_ne.sys
 #
-# make �����Œʏ�o�C�i���쐬
-# make led �Ńf�o�b�O�p�o�C�i���i�L�[�{�[�hLED�_���Łj�쐬
+# make だけで通常バイナリ作成
+# make led でデバッグ用バイナリ（キーボードLED点灯版）作成
 
 LED_TARGET = dbgLED.sys
 TARGET = etherL12.sys

@@ -20,21 +20,21 @@
 * Global Symbols ---------------------- *
 
 *
-* ‚bŒ¾Œê—p ŠO•”éŒ¾
+* ï¼£è¨€èªç”¨ å¤–éƒ¨å®£è¨€
 *
 	.xref	_Initialize, _AddList, _SearchList, _DeleteList		;main.c  
 	.xref	_GetMacAddr, _SetMacAddr				;ne2000.c
 	.xref	_SendPacket, _SetPacketReception, _NeptuneIntProcess	;ne2000.c
-*	.xref	_AddMulticastAddr, _DelMulticastAddr			;–¢À‘•
+*	.xref	_AddMulticastAddr, _DelMulticastAddr			;æœªå®Ÿè£…
 
 *
-* ‚bŒ¾Œê—p ŠO•”•Ï”
+* ï¼£è¨€èªç”¨ å¤–éƒ¨å¤‰æ•°
 *
-	.xref	_num_of_prt		;main.c “o˜^ƒvƒƒgƒRƒ‹”
-	.xref	_io_addr		;	I/O ƒAƒhƒŒƒX
-	.xref	_irq			;	Š„‚è‚İƒxƒNƒ^
-	.xref	_trap_no		;	g—ptrapƒiƒ“ƒo[
-	.xref	_trans_counter		;ne2000.c ‘—M/óMƒoƒCƒg”
+	.xref	_num_of_prt		;main.c ç™»éŒ²ãƒ—ãƒ­ãƒˆã‚³ãƒ«æ•°
+	.xref	_io_addr		;	I/O ã‚¢ãƒ‰ãƒ¬ã‚¹
+	.xref	_irq			;	å‰²ã‚Šè¾¼ã¿ãƒ™ã‚¯ã‚¿
+	.xref	_trap_no		;	ä½¿ç”¨trapãƒŠãƒ³ãƒãƒ¼
+	.xref	_trans_counter		;ne2000.c é€ä¿¡/å—ä¿¡ãƒã‚¤ãƒˆæ•°
 
 
 * Text Section -------------------------------- *
@@ -44,21 +44,21 @@
 
 
 *
-* ƒfƒoƒCƒXƒwƒbƒ_[
+* ãƒ‡ãƒã‚¤ã‚¹ãƒ˜ãƒƒãƒ€ãƒ¼
 *
 device_header:
-	.dc.l	-1			;ƒŠƒ“ƒNƒ|ƒCƒ“ƒ^[
+	.dc.l	-1			;ãƒªãƒ³ã‚¯ãƒã‚¤ãƒ³ã‚¿ãƒ¼
 	.dc	$8000			;device att.
 	.dc.l	strategy_entry		;stategy entry
 	.dc.l	interupt_entry		;interupt entry
 	.dc.b	'/dev/en0'		;device name
 	.dc.b	'EthD'			;for etherlib.a
-	.dc.b	'NepX'			;driver name (‚±‚ÌŒã‚ÉƒGƒ“ƒgƒŠ[‚ğ’u‚­)
+	.dc.b	'NepX'			;driver name (ã“ã®å¾Œã«ã‚¨ãƒ³ãƒˆãƒªãƒ¼ã‚’ç½®ã)
 
-* 'NepX' ‚©‚ç superjsr_entry ‚ÌŠÔ‚É‚Í‰½‚à’u‚©‚È‚¢‚±‚Æ
+* 'NepX' ã‹ã‚‰ superjsr_entry ã®é–“ã«ã¯ä½•ã‚‚ç½®ã‹ãªã„ã“ã¨
 
 *
-* ƒC[ƒTƒhƒ‰ƒCƒo ŠÖ” ƒGƒ“ƒgƒŠ[ ( for  DOS _SUPERJSR )
+* ã‚¤ãƒ¼ã‚µãƒ‰ãƒ©ã‚¤ãƒ é–¢æ•° ã‚¨ãƒ³ãƒˆãƒªãƒ¼ ( for  DOS _SUPERJSR )
 *   in: d0:	command number
 *	a0:	args
 *
@@ -76,11 +76,11 @@ superjsr_entry:
 
 	bsr	do_command
 	movem.l	(sp)+,d1-d7/a1-a7
-	rts				;•’Ê‚ÌƒŠƒ^[ƒ“
+	rts				;æ™®é€šã®ãƒªã‚¿ãƒ¼ãƒ³
 
 
 *
-* ƒC[ƒTƒhƒ‰ƒCƒo ŠÖ” ƒGƒ“ƒgƒŠ[ ( for  trap #n )
+* ã‚¤ãƒ¼ã‚µãƒ‰ãƒ©ã‚¤ãƒ é–¢æ•° ã‚¨ãƒ³ãƒˆãƒªãƒ¼ ( for  trap #n )
 *   in: d0:	command number
 *	a0:	args
 *
@@ -98,51 +98,51 @@ _trap_entry::
 
 	bsr	do_command
 	movem.l	(sp)+,d1-d7/a1-a7
-	rte				;Š„‚è‚İƒŠƒ^[ƒ“
+	rte				;å‰²ã‚Šè¾¼ã¿ãƒªã‚¿ãƒ¼ãƒ³
 
 
 *
-* Šeˆ—‚Ó‚è‚í‚¯
+* å„å‡¦ç†ãµã‚Šã‚ã‘
 *
 do_command:
 	moveq	#FUNC_MIN,d1
 	cmp.l	d0,d1
-	bgt	error			;d0<-2 ‚È‚ç–¢‘Î‰ƒRƒ}ƒ“ƒh”Ô†
+	bgt	error			;d0<-2 ãªã‚‰æœªå¯¾å¿œã‚³ãƒãƒ³ãƒ‰ç•ªå·
 	moveq	#FUNC_MAX,d1
 	cmp.l	d1,d0
-	bgt	error			;9<d0 ‚È‚ç–¢‘Î‰ƒRƒ}ƒ“ƒh”Ô†
+	bgt	error			;9<d0 ãªã‚‰æœªå¯¾å¿œã‚³ãƒãƒ³ãƒ‰ç•ªå·
 
 	add	d0,d0
 	move	(jumptable,pc,d0.w),d0
-	jmp	(jumptable,pc,d0.w)	;ˆø” a0 ‚ğƒŒƒWƒXƒ^“n‚µ
+	jmp	(jumptable,pc,d0.w)	;å¼•æ•° a0 ã‚’ãƒ¬ã‚¸ã‚¹ã‚¿æ¸¡ã—
 **	rts
 error:
 	moveq	#-1,d0
 	rts
 
 *
-* ƒWƒƒƒ“ƒvƒe[ƒuƒ‹
+* ã‚¸ãƒ£ãƒ³ãƒ—ãƒ†ãƒ¼ãƒ–ãƒ«
 *
 
 FUNC_MIN:	.equ	($-jumptable)/2
-	.dc	get_cnt_addr-jumptable		;-2 ... ‘—óMƒJƒEƒ“ƒ^‚ÌƒAƒhƒŒƒXæ“¾
-	.dc	driver_entry-jumptable		;-1 ... g—ptrap”Ô†‚Ìæ“¾
+	.dc	get_cnt_addr-jumptable		;-2 ... é€å—ä¿¡ã‚«ã‚¦ãƒ³ã‚¿ã®ã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
+	.dc	driver_entry-jumptable		;-1 ... ä½¿ç”¨trapç•ªå·ã®å–å¾—
 jumptable:
-	.dc	get_driver_version-jumptable	;00 ... ƒo[ƒWƒ‡ƒ“‚Ìæ“¾
-	.dc	get_mac_addr-jumptable		;01 ... Œ»İ‚ÌMACƒAƒhƒŒƒXæ“¾
-	.dc	get_prom_addr-jumptable		;02 ... PROM‚É‘‚©‚ê‚½MACƒAƒhƒŒƒXæ“¾
-	.dc	set_mac_addr-jumptable		;03 ... MACƒAƒhƒŒƒX‚Ìİ’è
-	.dc	send_packet-jumptable		;04 ... ƒpƒPƒbƒg‘—M
-	.dc	set_int_addr-jumptable		;05 ... ƒpƒPƒbƒgóMƒnƒ“ƒhƒ‰İ’è
-	.dc	get_int_addr-jumptable		;06 ... ƒpƒPƒbƒgóMƒnƒ“ƒhƒ‰‚ÌƒAƒhƒŒƒXæ“¾
-	.dc	del_int_addr-jumptable		;07 ... ƒnƒ“ƒhƒ‰íœ
-	.dc	set_multicast_addr-jumptable	;08 ... (ƒ}ƒ‹ƒ`ƒLƒƒƒXƒg‚Ìİ’èƒ–¢‘Î‰„)
-	.dc	get_statistics-jumptable	;09 ... (“Œv“Ç‚İo‚µƒ–¢‘Î‰„)
+	.dc	get_driver_version-jumptable	;00 ... ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®å–å¾—
+	.dc	get_mac_addr-jumptable		;01 ... ç¾åœ¨ã®MACã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
+	.dc	get_prom_addr-jumptable		;02 ... PROMã«æ›¸ã‹ã‚ŒãŸMACã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
+	.dc	set_mac_addr-jumptable		;03 ... MACã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
+	.dc	send_packet-jumptable		;04 ... ãƒ‘ã‚±ãƒƒãƒˆé€ä¿¡
+	.dc	set_int_addr-jumptable		;05 ... ãƒ‘ã‚±ãƒƒãƒˆå—ä¿¡ãƒãƒ³ãƒ‰ãƒ©è¨­å®š
+	.dc	get_int_addr-jumptable		;06 ... ãƒ‘ã‚±ãƒƒãƒˆå—ä¿¡ãƒãƒ³ãƒ‰ãƒ©ã®ã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
+	.dc	del_int_addr-jumptable		;07 ... ãƒãƒ³ãƒ‰ãƒ©å‰Šé™¤
+	.dc	set_multicast_addr-jumptable	;08 ... (ãƒãƒ«ãƒã‚­ãƒ£ã‚¹ãƒˆã®è¨­å®šï¼œæœªå¯¾å¿œï¼)
+	.dc	get_statistics-jumptable	;09 ... (çµ±è¨ˆèª­ã¿å‡ºã—ï¼œæœªå¯¾å¿œï¼)
 FUNC_MAX:	.equ	($-jumptable)/2-1
 
 
 *
-* ƒRƒ}ƒ“ƒh -2: ‘—óMƒJƒEƒ“ƒ^‚ÌƒAƒhƒŒƒX‚ğ•Ô‚·
+* ã‚³ãƒãƒ³ãƒ‰ -2: é€å—ä¿¡ã‚«ã‚¦ãƒ³ã‚¿ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’è¿”ã™
 *  return: address
 *
 get_cnt_addr:
@@ -152,7 +152,7 @@ get_cnt_addr:
 
 
 *
-* ƒRƒ}ƒ“ƒh -1: g—ptrap”Ô†‚ğ•Ô‚·
+* ã‚³ãƒãƒ³ãƒ‰ -1: ä½¿ç”¨trapç•ªå·ã‚’è¿”ã™
 *  return: trap number to use (-1:use SUPERJSR)
 *
 driver_entry:
@@ -163,13 +163,13 @@ driver_entry:
 *mesff:	.dc.b	'DriverEntry',13,10,0
 *	.text
 
-	move.l	(_trap_no,pc),d0	;trap_no ... main.c •Ï”
+	move.l	(_trap_no,pc),d0	;trap_no ... main.c å¤‰æ•°
 	rts
 
 
 *
-* ƒRƒ}ƒ“ƒh 00: ƒhƒ‰ƒCƒo[‚Ìƒo[ƒWƒ‡ƒ“‚ğ•Ô‚·
-*  return: version number (—á... ver1.00 ‚È‚ç 100 ‚ğ•Ô‚·)
+* ã‚³ãƒãƒ³ãƒ‰ 00: ãƒ‰ãƒ©ã‚¤ãƒãƒ¼ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’è¿”ã™
+*  return: version number (ä¾‹... ver1.00 ãªã‚‰ 100 ã‚’è¿”ã™)
 *
 get_driver_version:
 *	pea	(mes00,pc)
@@ -184,7 +184,7 @@ get_driver_version:
 
 
 *
-* ƒRƒ}ƒ“ƒh 01: Œ»İ‚Ì MAC ƒAƒhƒŒƒX‚Ìæ“¾
+* ã‚³ãƒãƒ³ãƒ‰ 01: ç¾åœ¨ã® MAC ã‚¢ãƒ‰ãƒ¬ã‚¹ã®å–å¾—
 *  return: same as *dst
 *
 get_mac_addr:
@@ -197,13 +197,13 @@ get_mac_addr:
 
 	pea	(a0)
 	pea	(a0)
-	bsr	_GetMacAddr		;ne2000.c ŠÖ”
+	bsr	_GetMacAddr		;ne2000.c é–¢æ•°
 	addq.l	#4,sp
-	move.l	(sp)+,d0		;ˆø”‚Ì a0 ‚ğ d0 ‚É‚»‚Ì‚Ü‚Ü•Ô‚·
+	move.l	(sp)+,d0		;å¼•æ•°ã® a0 ã‚’ d0 ã«ãã®ã¾ã¾è¿”ã™
 	rts
 
 *
-* ƒRƒ}ƒ“ƒh 02: EEPROM ‚É‘‚©‚ê‚½ MAC ƒAƒhƒŒƒX‚Ìæ“¾
+* ã‚³ãƒãƒ³ãƒ‰ 02: EEPROM ã«æ›¸ã‹ã‚ŒãŸ MAC ã‚¢ãƒ‰ãƒ¬ã‚¹ã®å–å¾—
 *  return: same as *dst
 *
 get_prom_addr:
@@ -216,13 +216,13 @@ get_prom_addr:
 
 	pea	(a0)
 	pea	(a0)
-	bsr	_GetMacAddr		;ne2000.c ŠÖ”
+	bsr	_GetMacAddr		;ne2000.c é–¢æ•°
 	addq.l	#4,sp
-	move.l	(sp)+,d0		;ˆø”‚Ì a0 ‚ğ d0 ‚É‚»‚Ì‚Ü‚Ü•Ô‚·
+	move.l	(sp)+,d0		;å¼•æ•°ã® a0 ã‚’ d0 ã«ãã®ã¾ã¾è¿”ã™
 	rts
 
 *
-* ƒRƒ}ƒ“ƒh 03: MACƒAƒhƒŒƒX‚Ìİ’è
+* ã‚³ãƒãƒ³ãƒ‰ 03: MACã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
 *  return: 0 (if no errors)
 *
 set_mac_addr:
@@ -234,13 +234,13 @@ set_mac_addr:
 *	.text
 
 	pea	(a0)
-	bsr	_SetMacAddr		;ne2000.c ŠÖ”
+	bsr	_SetMacAddr		;ne2000.c é–¢æ•°
 	addq.l	#4,sp
 	rts
 
 
 *
-* ƒRƒ}ƒ“ƒh 04: ƒpƒPƒbƒg‘—M
+* ã‚³ãƒãƒ³ãƒ‰ 04: ãƒ‘ã‚±ãƒƒãƒˆé€ä¿¡
 *   packet contents:
 *	Distination MAC: 6 bytes
 *	Source(own) MAC: 6 bytes
@@ -253,10 +253,10 @@ send_packet:
 *	DOS	_PRINT
 *	addq.l	#4,sp
 
-	move.l	(a0)+,d0		;ƒpƒPƒbƒgƒTƒCƒY
-	move.l	(a0),-(sp)		;ƒpƒPƒbƒgƒAƒhƒŒƒX
+	move.l	(a0)+,d0		;ãƒ‘ã‚±ãƒƒãƒˆã‚µã‚¤ã‚º
+	move.l	(a0),-(sp)		;ãƒ‘ã‚±ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹
 	move.l	d0,-(sp)
-	bsr	_SendPacket		;ne2000.c ŠÖ”
+	bsr	_SendPacket		;ne2000.c é–¢æ•°
 	addq.l	#8,sp
 
 *	move.l	d0,-(sp)
@@ -266,14 +266,14 @@ send_packet:
 *	move.l	(sp)+,d0
 *	.data
 *mes04:	.dc.b	13,10,'SendPacket,13,10',0
-*mes04e:.dc.b	13,10,'SendPacket‚¨‚í‚è',13,10,0
+*mes04e:.dc.b	13,10,'SendPacketãŠã‚ã‚Š',13,10,0
 *	.text
 
 	rts
 
 
 *
-* ƒRƒ}ƒ“ƒh 05: óMŠ„‚è‚İƒnƒ“ƒhƒ‰’Ç‰ÁEİ’è
+* ã‚³ãƒãƒ³ãƒ‰ 05: å—ä¿¡å‰²ã‚Šè¾¼ã¿ãƒãƒ³ãƒ‰ãƒ©è¿½åŠ ãƒ»è¨­å®š
 *   type: 0x00000800 IP packet
 *         0x00000806 ARP packet
 *  return: 0 (if no errors)
@@ -286,28 +286,28 @@ set_int_addr:
 *mes05:	.dc.b	'SetIntAddr',13,10,0
 *	.text
 
-	move.l	(a0)+,d0		;ƒvƒƒgƒRƒ‹”Ô†
-	move.l	(a0),-(sp)		;ƒnƒ“ƒhƒ‰ŠÖ”‚ÌƒAƒhƒŒƒX
+	move.l	(a0)+,d0		;ãƒ—ãƒ­ãƒˆã‚³ãƒ«ç•ªå·
+	move.l	(a0),-(sp)		;ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ã®ã‚¢ãƒ‰ãƒ¬ã‚¹
 	move.l	d0,-(sp)
-	bsr	_AddList		;main.c ŠÖ”
+	bsr	_AddList		;main.c é–¢æ•°
 	addq.l	#8,sp
 	tst.l	d0
-	bmi	set_int_addr_rts	;“o˜^¸”s
+	bmi	set_int_addr_rts	;ç™»éŒ²å¤±æ•—
 
-	cmpi.l	#1,(_num_of_prt)	;ƒnƒ“ƒhƒ‰”‚ª‚P‚È‚çŠ„‚è‚İ‹–‰Â‚Ö
+	cmpi.l	#1,(_num_of_prt)	;ãƒãƒ³ãƒ‰ãƒ©æ•°ãŒï¼‘ãªã‚‰å‰²ã‚Šè¾¼ã¿è¨±å¯ã¸
 	bne	set_int_addr_rts
 
-	pea	(1)			;1=<‹–‰Â>
-	bsr	_SetPacketReception	;Š„‚è‚İ‹–‰Â ... ne2000.c
+	pea	(1)			;1=<è¨±å¯>
+	bsr	_SetPacketReception	;å‰²ã‚Šè¾¼ã¿è¨±å¯ ... ne2000.c
 	addq.l	#4,sp
 
-*	moveq	#0,d0			;SetPacketReception() ‚Åí‚É 0 ‚ª•Ô‚é‚Ì‚ÅÈ—ª
+*	moveq	#0,d0			;SetPacketReception() ã§å¸¸ã« 0 ãŒè¿”ã‚‹ã®ã§çœç•¥
 set_int_addr_rts:
 	rts
 
 
 *
-* ƒRƒ}ƒ“ƒh 06: Š„‚è‚İƒnƒ“ƒhƒ‰‚ÌƒAƒhƒŒƒXæ“¾
+* ã‚³ãƒãƒ³ãƒ‰ 06: å‰²ã‚Šè¾¼ã¿ãƒãƒ³ãƒ‰ãƒ©ã®ã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
 *  return: interupt address
 *
 get_int_addr:
@@ -325,7 +325,7 @@ get_int_addr:
 
 
 *
-* ƒRƒ}ƒ“ƒh 07: Š„‚è‚İƒnƒ“ƒhƒ‰‚Ìíœ
+* ã‚³ãƒãƒ³ãƒ‰ 07: å‰²ã‚Šè¾¼ã¿ãƒãƒ³ãƒ‰ãƒ©ã®å‰Šé™¤
 *  return: 0 (if no errors)
 *
 del_int_addr:
@@ -337,24 +337,24 @@ del_int_addr:
 *	.text
 
 	pea	(a0)
-	bsr	_DeleteList		;main.c ŠÖ”
+	bsr	_DeleteList		;main.c é–¢æ•°
 	move.l	d0,(sp)+
-	bmi	del_int_addr_ret	;íœ¸”s
+	bmi	del_int_addr_ret	;å‰Šé™¤å¤±æ•—
 
-	tst.l	(_num_of_prt)		;ƒnƒ“ƒhƒ‰‚ªˆê‚Â‚à‚È‚­‚È‚ê‚ÎŠ„‚è‚İ‚ğ‹Ö~‚·‚é
+	tst.l	(_num_of_prt)		;ãƒãƒ³ãƒ‰ãƒ©ãŒä¸€ã¤ã‚‚ãªããªã‚Œã°å‰²ã‚Šè¾¼ã¿ã‚’ç¦æ­¢ã™ã‚‹
 	bne	del_int_addr_ret
 
-	clr.l	-(sp)			;0=<‹Ö~>
-	bsr	_SetPacketReception	;Š„‚è‚İ‹Ö~ ... ne2000.c
+	clr.l	-(sp)			;0=<ç¦æ­¢>
+	bsr	_SetPacketReception	;å‰²ã‚Šè¾¼ã¿ç¦æ­¢ ... ne2000.c
 	addq.l	#4,sp
 
-*	moveq	#0,d0			;SetPacketReception() ‚Åí‚É 0 ‚ª•Ô‚é‚Ì‚ÅÈ—ª
+*	moveq	#0,d0			;SetPacketReception() ã§å¸¸ã« 0 ãŒè¿”ã‚‹ã®ã§çœç•¥
 del_int_addr_ret:
 	rts
 
 
 *
-* ƒRƒ}ƒ“ƒh 08: ƒ}ƒ‹ƒ`ƒLƒƒƒXƒgƒAƒhƒŒƒX‚Ìİ’è
+* ã‚³ãƒãƒ³ãƒ‰ 08: ãƒãƒ«ãƒã‚­ãƒ£ã‚¹ãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¨­å®š
 *
 set_multicast_addr:
 *	pea	(mes08,pc)
@@ -369,7 +369,7 @@ set_multicast_addr:
 
 
 *
-* ƒRƒ}ƒ“ƒh 09: “Œv“Ç‚İo‚µ
+* ã‚³ãƒãƒ³ãƒ‰ 09: çµ±è¨ˆèª­ã¿å‡ºã—
 *
 get_statistics:
 *	pea	(mes09,pc)
@@ -384,26 +384,26 @@ get_statistics:
 
 
 *
-* Š„‚è‚İƒWƒƒƒ“ƒvæ
+* å‰²ã‚Šè¾¼ã¿ã‚¸ãƒ£ãƒ³ãƒ—å…ˆ
 *
 _NeptuneIntHandler::
-	move.l	sp,(stack_buff_i)	;©‘O‚ÌƒXƒ^ƒbƒNƒGƒŠƒA‚ğg‚¤
+	move.l	sp,(stack_buff_i)	;è‡ªå‰ã®ã‚¹ã‚¿ãƒƒã‚¯ã‚¨ãƒªã‚¢ã‚’ä½¿ã†
 	lea	(def_stack),sp		;
 
 	movem.l	d0-d7/a0-a6,-(sp)
 	move	sr,-(sp)
-	ori	#$400,sr		;!!!–â‘è‚ ‚è
+	ori	#$400,sr		;!!!å•é¡Œã‚ã‚Š
 
-	bsr	_NeptuneIntProcess	;ne2000.c ŠÖ”
+	bsr	_NeptuneIntProcess	;ne2000.c é–¢æ•°
 
 	move	(sp)+,sr
 	movem.l	(sp)+,d0-d7/a0-a6
-	movea.l	(stack_buff_i,pc),sp	;ƒXƒ^ƒbƒNƒ|ƒCƒ“ƒ^‚ğŒ³‚É‚à‚Ç‚·
+	movea.l	(stack_buff_i,pc),sp	;ã‚¹ã‚¿ãƒƒã‚¯ãƒã‚¤ãƒ³ã‚¿ã‚’å…ƒã«ã‚‚ã©ã™
 	rte
 
 
 *
-* ƒfƒoƒCƒXƒhƒ‰ƒCƒoƒGƒ“ƒgƒŠ[
+* ãƒ‡ãƒã‚¤ã‚¹ãƒ‰ãƒ©ã‚¤ãƒã‚¨ãƒ³ãƒˆãƒªãƒ¼
 *
 strategy_entry:
 	move.l	a5,(request_buffer)
@@ -411,7 +411,7 @@ strategy_entry:
 
 
 interupt_entry:
-	move.l	sp,(stack_buff)		;©‘O‚ÌƒXƒ^ƒbƒNƒGƒŠƒA‚ğg‚¤
+	move.l	sp,(stack_buff)		;è‡ªå‰ã®ã‚¹ã‚¿ãƒƒã‚¯ã‚¨ãƒªã‚¢ã‚’ä½¿ã†
 	lea	(def_stack),sp		;
 
 	movem.l	d1-d7/a0-a5,-(sp)
@@ -421,7 +421,7 @@ interupt_entry:
 
 .ifdef EXIT_LED_BIT
 	IOCS	_B_SFTSNS
-	btst	#EXIT_LED_BIT,d0	;ƒL[ƒ{[ƒhLED‚ª“_“”‚µ‚Ä‚¢‚½‚çí’“‚µ‚È‚¢
+	btst	#EXIT_LED_BIT,d0	;ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰LEDãŒç‚¹ç¯ã—ã¦ã„ãŸã‚‰å¸¸é§ã—ãªã„
 	bne	errorret
 .endif
 
@@ -468,13 +468,13 @@ opt_t:
 	beq	arg_loop
 	bra	opt_loop
 arg_end:
-	bsr	_Initialize		;main.c ŠÖ”
-				;I/OƒAƒhƒŒƒXİ’è
-				;MACƒAƒhƒŒƒXæ“¾
-				;ƒvƒƒgƒRƒ‹ƒŠƒXƒg‰Šú‰»
-				;NE2000‰Šú‰»
-				;Š„‚è‚İƒnƒ“ƒhƒ‰iƒxƒNƒ^İ’èj
-				;trapƒT[ƒrƒXiƒxƒNƒ^İ’èj
+	bsr	_Initialize		;main.c é–¢æ•°
+				;I/Oã‚¢ãƒ‰ãƒ¬ã‚¹è¨­å®š
+				;MACã‚¢ãƒ‰ãƒ¬ã‚¹å–å¾—
+				;ãƒ—ãƒ­ãƒˆã‚³ãƒ«ãƒªã‚¹ãƒˆåˆæœŸåŒ–
+				;NE2000åˆæœŸåŒ–
+				;å‰²ã‚Šè¾¼ã¿ãƒãƒ³ãƒ‰ãƒ©ï¼ˆãƒ™ã‚¯ã‚¿è¨­å®šï¼‰
+				;trapã‚µãƒ¼ãƒ“ã‚¹ï¼ˆãƒ™ã‚¯ã‚¿è¨­å®šï¼‰
 	tst.l	d0
 	bne	errorret
 
@@ -495,7 +495,7 @@ intret:
 	move.b	d0,(3,a5)
 	movem.l	(sp)+,d1-d7/a0-a5
 
-	movea.l	(stack_buff,pc),sp	;ƒXƒ^ƒbƒNƒ|ƒCƒ“ƒ^‚ğŒ³‚É‚à‚Ç‚·
+	movea.l	(stack_buff,pc),sp	;ã‚¹ã‚¿ãƒƒã‚¯ãƒã‚¤ãƒ³ã‚¿ã‚’å…ƒã«ã‚‚ã©ã™
 	rts
 
 get_num:
@@ -523,11 +523,11 @@ get_num:
 	.data
 mestitle:
 	.dc.b	13,10
-	.dc.b	'Neptune-X Ethercard Driver version 0.03 <Sample> by ‚r‚ˆ‚‰|‚l‚`‚c.',13,10
+	.dc.b	'Neptune-X Ethercard Driver version 0.03 <Sample> by ï¼³ï½ˆï½‰ï¼ï¼­ï¼¡ï¼¤.',13,10
 	.dc.b	'  +M01 by Mitsuky, +L12 by nagai(LAC)',13,10
 	.dc.b	0
 mesparam_err:
-	.dc.b	'ƒpƒ‰ƒ[ƒ^‚ªˆÙí‚Å‚·',13,10,0
+	.dc.b	'ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒç•°å¸¸ã§ã™',13,10,0
 	.even
 
 
@@ -550,7 +550,7 @@ stack_buff_i:
 	.quad
 
 *
-* ƒXƒ^ƒbƒNƒGƒŠƒA
+* ã‚¹ã‚¿ãƒƒã‚¯ã‚¨ãƒªã‚¢
 *
 	.ds.b	1024*8
 def_stack:

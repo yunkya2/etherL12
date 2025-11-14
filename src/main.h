@@ -25,7 +25,7 @@
 ** number of multicast address we can handle		**EDIT this**
 */
 #define NMULTICAST	(64)
-/* ‚½‚¾‚µA‚Ü‚¾ƒ}ƒ‹ƒ`ƒLƒƒƒXƒg‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢ */
+/* ãŸã ã—ã€ã¾ã ãƒãƒ«ãƒã‚­ãƒ£ã‚¹ãƒˆã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ */
 
 /*
 ** ISA-BUS I/O base address				**EDIT this**
@@ -48,7 +48,7 @@ struct prt {
 
 
 /*
- * ƒOƒ[ƒoƒ‹•Ï”
+ * ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
  */
 extern volatile unsigned char* io_addr;
 extern unsigned int irq;
@@ -63,7 +63,7 @@ extern struct eaddr multicast_array [NMULTICAST];
 
 
 /*
- * ƒvƒƒgƒ^ƒCƒvéŒ¾
+ * ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
  */
 extern int Initialize (void);
 extern int InitList (int);
@@ -81,7 +81,7 @@ extern void MakeMulticastTable (unsigned char*);
 
 
 /*
- *  ne.s “àŠÖ”
+ *  ne.s å†…é–¢æ•°
  */
 extern void NeptuneIntHandler (void);
 extern void trap_entry (void);

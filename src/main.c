@@ -23,7 +23,7 @@ int trap_no;
 int num_of_prt;
 struct prt PRT_LIST [NPRT];
 
-/* ƒ}ƒ‹ƒ`ƒLƒƒƒXƒgi–¢‘Î‰j */
+/* ãƒãƒ«ãƒã‚­ãƒ£ã‚¹ãƒˆï¼ˆæœªå¯¾å¿œï¼‰ */
 #ifdef MULTICAST
 int num_of_multicast;
 struct eaddr multicast_array [NMULTICAST];
@@ -43,7 +43,7 @@ sprint_eaddr (unsigned char* dst, void* e)
 
 
 /************************************************
- *	TRAP n‚ªg—p‰Â”\‚©’²‚×‚é		*
+ *	TRAP nãŒä½¿ç”¨å¯èƒ½ã‹èª¿ã¹ã‚‹		*
  ************************************************/
 static int
 is_valid_trap (int trap_no)
@@ -53,10 +53,10 @@ is_valid_trap (int trap_no)
   if (trap_no < 0 || 7 < trap_no)
     return 0;
 
-  /* g—p’†‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN */
+  /* ä½¿ç”¨ä¸­ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ */
   addr = (unsigned int) _dos_intvcg (TRAP_VECNO (trap_no));
 
-  /* ˆ—ƒAƒhƒŒƒX‚ÌÅãˆÊƒoƒCƒg‚ÉƒxƒNƒ^”Ô†‚ª“ü‚Á‚Ä‚¢‚ê‚Î–¢g—p */
+  /* å‡¦ç†ã‚¢ãƒ‰ãƒ¬ã‚¹ã®æœ€ä¸Šä½ãƒã‚¤ãƒˆã«ãƒ™ã‚¯ã‚¿ç•ªå·ãŒå…¥ã£ã¦ã„ã‚Œã°æœªä½¿ç”¨ */
   if (addr & 0xff000000)
     return -1;
 
@@ -64,14 +64,14 @@ is_valid_trap (int trap_no)
 }
 
 /************************************************
- *	–¢g—p‚ÌTRAP n‚ğŒŸõ			*
+ *	æœªä½¿ç”¨ã®TRAP nã‚’æ¤œç´¢			*
  ************************************************/
 static int
 search_trap_no (int def)
 {
   int i;
 
-  /* ‚à‚µdef‚ªg—p‰Â”\‚È‚ç‚»‚ê‚ÉŒˆ’è */
+  /* ã‚‚ã—defãŒä½¿ç”¨å¯èƒ½ãªã‚‰ãã‚Œã«æ±ºå®š */
   if (is_valid_trap (def))
     return def;
 
@@ -96,7 +96,7 @@ trap_vector (int trap_no, void *func)
 
 
 /************************************************
-  ‰Šú‰»ŠÖ”ine.sƒCƒjƒVƒƒƒ‰ƒCƒY‚ÅŒÄ‚Ñ‚Ü‚·j
+  åˆæœŸåŒ–é–¢æ•°ï¼ˆne.sã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚ºã§å‘¼ã³ã¾ã™ï¼‰
 ************************************************/
 int
 Initialize (void)
@@ -106,7 +106,7 @@ Initialize (void)
 
   if (SearchNeptuneX (&io_addr, &irq))
     {
-      Print ("Neptune-X ‚Ì‘¶İ‚ğŠm”F‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\r\n");
+      Print ("Neptune-X ã®å­˜åœ¨ã‚’ç¢ºèªã§ãã¾ã›ã‚“ã§ã—ãŸ\r\n");
       return -1;
     }
 
@@ -114,19 +114,19 @@ Initialize (void)
    || InitNeptune ()
    || TrapNeptuneVector (irq, NeptuneIntHandler))
     {
-      Print ("Neptune-X ‚Ì‰Šú‰»‚É¸”s‚µ‚Ü‚µ‚½\r\n");
+      Print ("Neptune-X ã®åˆæœŸåŒ–ã«å¤±æ•—ã—ã¾ã—ãŸ\r\n");
       return -1;
     }
 
   GetMacAddr (&ether_addr);
 
-  /* –¢g—ptrap”Ô†‚ğ’²‚×‚éiw’è”Ô†—Dæj */
+  /* æœªä½¿ç”¨trapç•ªå·ã‚’èª¿ã¹ã‚‹ï¼ˆæŒ‡å®šç•ªå·å„ªå…ˆï¼‰ */
   if (trap_no >= 0)
     trap_no = search_trap_no (trap_no);
 
   if (trap_no >= 0)
     {
-      /* trap‚ğƒtƒbƒN‚·‚é */
+      /* trapã‚’ãƒ•ãƒƒã‚¯ã™ã‚‹ */
       trap_vector (trap_no, (void*) trap_entry);
       sprintf (buff, "\tAPI trap number:\t%d\r\n", trap_no);
     }
@@ -147,7 +147,7 @@ Initialize (void)
 }
 
 /************************************************
- * ƒvƒƒgƒRƒ‹ƒŠƒXƒg‰Šú‰»                       *
+ * ãƒ—ãƒ­ãƒˆã‚³ãƒ«ãƒªã‚¹ãƒˆåˆæœŸåŒ–                       *
  ************************************************/
 int
 InitList (int n)
@@ -172,7 +172,7 @@ InitList (int n)
 }
 
 /************************************************
- * óMƒnƒ“ƒhƒ‰iƒvƒƒgƒRƒ‹j’Ç‰Á               *
+ * å—ä¿¡ãƒãƒ³ãƒ‰ãƒ©ï¼ˆãƒ—ãƒ­ãƒˆã‚³ãƒ«ï¼‰è¿½åŠ                *
  ************************************************/
 int
 AddList (int type, int_handler handler)
@@ -216,7 +216,7 @@ AddList (int type, int_handler handler)
 }
 
 /************************************************
- * óMƒnƒ“ƒhƒ‰iƒvƒƒgƒRƒ‹jíœ               *
+ * å—ä¿¡ãƒãƒ³ãƒ‰ãƒ©ï¼ˆãƒ—ãƒ­ãƒˆã‚³ãƒ«ï¼‰å‰Šé™¤               *
  ************************************************/
 int
 DeleteList (int type)
@@ -242,7 +242,7 @@ DeleteList (int type)
 }
 
 /************************************************
- * óMƒnƒ“ƒhƒ‰iƒvƒƒgƒRƒ‹jƒT[ƒ`             *
+ * å—ä¿¡ãƒãƒ³ãƒ‰ãƒ©ï¼ˆãƒ—ãƒ­ãƒˆã‚³ãƒ«ï¼‰ã‚µãƒ¼ãƒ             *
  ************************************************/
 int_handler
 SearchList (int type)
@@ -264,7 +264,7 @@ SearchList (int type)
 
 
 /************************************************
- * óMƒnƒ“ƒhƒ‰iƒvƒƒgƒRƒ‹jƒT[ƒ`             *
+ * å—ä¿¡ãƒãƒ³ãƒ‰ãƒ©ï¼ˆãƒ—ãƒ­ãƒˆã‚³ãƒ«ï¼‰ã‚µãƒ¼ãƒ             *
  ************************************************/
 int_handler
 SearchList2 (int type, int n)

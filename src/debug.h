@@ -1,4 +1,4 @@
-/* ether_ne.sys —pƒfƒoƒbƒOƒ‹[ƒ`ƒ“ */
+/* ether_ne.sys ç”¨ãƒ‡ãƒãƒƒã‚°ãƒ«ãƒ¼ãƒãƒ³ */
 
 #ifndef DEBUG_H
 #define DEBUG_H
@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-/* DEBUG_PRINTF ƒ}ƒNƒ‚ÍAˆø”‚ğ“ñdŠ‡ŒÊ (( )) ‚ÅˆÍ‚Á‚Ä‰º‚³‚¢ */
-/* —á: DEBUG_PRINTF (("value = %d\n", num)); */
+/* DEBUG_PRINTF ãƒã‚¯ãƒ­ã¯ã€å¼•æ•°ã‚’äºŒé‡æ‹¬å¼§ (( )) ã§å›²ã£ã¦ä¸‹ã•ã„ */
+/* ä¾‹: DEBUG_PRINTF (("value = %d\n", num)); */
 #ifdef DEBUG_S
 static void
 debug_printf (const char* fmt, ...)
