@@ -31,7 +31,7 @@
 // Ｃ言語用 外部変数
 //
 	.xref	num_of_prt		//main.c 登録プロトコル数
-	.xref	io_addr		//	I/O アドレス
+//	.xref	io_addr		//	I/O アドレス
 	.xref	irq			//	割り込みベクタ
 	.xref	trap_no		//	使用trapナンバー
 	.xref	trans_counter		//ne2000.c 送信/受信バイト数
@@ -533,7 +533,7 @@ mestitle:
 	.ascii	"Neptune-X Ethercard Driver version 0.03 <Sample> by "
 	.dc.b	0x82,0x72,0x82,0x88,0x82,0x89,0x81,0x7c,0x82,0x6c,0x82,0x60,0x82,0x63
 	.ascii	".\r\n"
-	.ascii	"  +M01 by Mitsuky, +L12 by nagai(LAC)\r\n"
+	.ascii	"  +M01 by Mitsuky, +L12 by nagai(LAC) +XM6wa by Y.Nakamura\r\n"
 	.dc.b	0
 mesparam_err:
 	.asciz	"パラメータが異常です\r\n"

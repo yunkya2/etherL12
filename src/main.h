@@ -50,7 +50,8 @@ struct prt {
 /*
  * グローバル変数
  */
-extern volatile unsigned char* io_addr;
+extern volatile unsigned char* io_addrR;
+extern volatile unsigned char* io_addrW;
 extern unsigned int irq;
 extern int trap_no;
 extern int num_of_prt;

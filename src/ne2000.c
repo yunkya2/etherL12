@@ -55,25 +55,25 @@ struct trans_counter trans_counter;
 unsigned char rx_buff [2048];		/* 受信バッファ */
 
 
-#define SELECT_PAGE_0(n)	(io_addr [E8390_CMD] = E8390_PAGE0 + n)
-#define SELECT_PAGE_1(n)	(io_addr [E8390_CMD] = E8390_PAGE1 + n)
+#define SELECT_PAGE_0(n)	(io_addrW [E8390_CMD] = E8390_PAGE0 + n)
+#define SELECT_PAGE_1(n)	(io_addrW [E8390_CMD] = E8390_PAGE1 + n)
 
 
 /*********************************************************************
 *    ＤＰ８３９０  リセット                                          *
 *********************************************************************/
 static void
-DP8390_Reset (volatile unsigned char* baseadr)
+DP8390_Reset (volatile unsigned char* baseadrR, volatile unsigned char* baseadrW)
 {
   int i;
   unsigned char in;
 
-  in = *(baseadr + NE_RESET);
-  baseadr [NE_RESET] = in;
+  in = *(baseadrR + NE_RESET);
+  baseadrW [NE_RESET] = in;
 
   for (i=0; i < 30000; i++)
     {
-      if ((baseadr [EN0_ISR] & ENISR_RESET) !=0 )
+      if ((baseadrR [EN0_ISR] & ENISR_RESET) !=0 )
 	break;
     }
 }
@@ -97,7 +97,7 @@ GetMacAddr (struct eaddr* buf)
 
   for (i = 0; i < 6; i++)
     {
-      p [i] = io_addr [EN1_PHYS + i * 2];
+      p [i] = io_addrR [EN1_PHYS + i * 2];
     }
 
   return 0;
@@ -121,7 +121,7 @@ SetMacAddr (const struct eaddr* data)
 
   for (i = 0; i < 6; i++)
     {
-      io_addr [EN1_PHYS + i * 2] = p [i];
+      io_addrW [EN1_PHYS + i * 2] = p [i];
     }
 
   return 0;
@@ -147,11 +147,12 @@ read_check (unsigned short* dst)
  *  Neptune-X を さがします                     *
  ************************************************/
 int
-SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq)
+SearchNeptuneX (volatile unsigned char** io_addrR, volatile unsigned char** io_addrW, unsigned int* irq)
 {
   volatile unsigned char* p;
   int i;
   unsigned char in;
+  int read_offset = 0;
 
   for (i = 0; i < 0x400; i += 0x40)
     {
@@ -159,17 +160,23 @@ SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq)
 
       if (read_check ((unsigned short*) p))
 	{
-	  /* すくなくとも読みこみ可能 */
+    if (*(unsigned char *)0xcbc) {
+      read_offset = 1;
+      Print("## XM6 X68030 emulation workaround ##\r\n");
+    }
+
+    /* すくなくとも読みこみ可能 */
 	  p [E8390_CMD] = E8390_NODMA + E8390_PAGE1 + E8390_STOP;
 	  p [0x0d * 2] = 0xff;
 	  p [E8390_CMD] = E8390_NODMA + E8390_PAGE0;
-	  in = p [EN0_COUNTER0];
+	  in = p [EN0_COUNTER0 + read_offset];
 
-	  if (p [EN0_COUNTER0] != 0)
+	  if (p [EN0_COUNTER0 + read_offset] != 0)
 	    continue;			/* はずれ */
 
 	  /* NE-2000系 らしい */	/* すごーい、手抜き */
-	  *io_addr = p;
+	  *io_addrW = p;
+	  *io_addrR = p + read_offset;
 	  *irq = NEPTUNE_IVN;
 	  return 0;
 	}
@@ -204,33 +211,33 @@ InitNeptune (void)
 
   DEBUG_KBDLED (KBDLED_OFF);
 
-  DP8390_Reset (io_addr);
+  DP8390_Reset (io_addrR, io_addrW);
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  io_addr [EN0_DCFG] = 0x48;		/* set byte-transfer mode */
+  io_addrW [EN0_DCFG] = 0x48;		/* set byte-transfer mode */
 		    /* 0x49; */		/* set word-transfer mode */
 
-  io_addr [EN0_RCNTLO] = 0x00;
-  io_addr [EN0_RCNTHI] = 0x00;
-  io_addr [EN0_IMR] = 0x00;		/* すべてマスク */
-  io_addr [EN0_ISR] = 0xff;		/* 割り込みステータスリセット */
-  io_addr [EN0_RXCR] = E8390_RXOFF;
-  io_addr [EN0_TXCR] = E8390_TXOFF;
+  io_addrW [EN0_RCNTLO] = 0x00;
+  io_addrW [EN0_RCNTHI] = 0x00;
+  io_addrW [EN0_IMR] = 0x00;		/* すべてマスク */
+  io_addrW [EN0_ISR] = 0xff;		/* 割り込みステータスリセット */
+  io_addrW [EN0_RXCR] = E8390_RXOFF;
+  io_addrW [EN0_TXCR] = E8390_TXOFF;
 
 
 /* ＥＥＰＲＯＭよりＭＡＣアドレスなどを読み込みます */
-  io_addr [EN0_RCNTLO] = 32;
-  io_addr [EN0_RCNTHI] = 0;		/* 転送サイズ３２バイト */
-  io_addr [EN0_RSARLO] = 0x00;
-  io_addr [EN0_RSARHI] = 0x00;		/* 内蔵メモリ番地は０に */
-  io_addr [E8390_CMD] = E8390_RREAD + E8390_START;	/* 読み込み開始 */
+  io_addrW [EN0_RCNTLO] = 32;
+  io_addrW [EN0_RCNTHI] = 0;		/* 転送サイズ３２バイト */
+  io_addrW [EN0_RSARLO] = 0x00;
+  io_addrW [EN0_RSARHI] = 0x00;		/* 内蔵メモリ番地は０に */
+  io_addrW [E8390_CMD] = E8390_RREAD + E8390_START;	/* 読み込み開始 */
 
   wl = 2;
   for (i = 0; i < 32; i += 2)
     {
-      prom [i + 0] = io_addr [NE_DATAPORT];
-      prom [i + 1] = io_addr [NE_DATAPORT];
+      prom [i + 0] = io_addrR [NE_DATAPORT];
+      prom [i + 1] = io_addrR [NE_DATAPORT];
 
       if (prom [i + 0] != prom [i + 1])
 	wl = 1;		/* ８ビットカード(NE-1000) */
@@ -238,7 +245,7 @@ InitNeptune (void)
 
   if (wl == 2)
     {			/* １６ビットカード(NE-2000) */
-      io_addr [EN0_DCFG] = 0x49;	/* set word-transfer mode */
+      io_addrW [EN0_DCFG] = 0x49;	/* set word-transfer mode */
 
       for (i = 0; i < 16; i++)
 	prom [i] = prom [i + i];
@@ -267,7 +274,7 @@ InitNeptune (void)
 
   for (i = 0; i < 6; i++)
     {
-      io_addr [EN1_PHYS + i * 2] = prom [i];
+      io_addrW [EN1_PHYS + i * 2] = prom [i];
     }
 
 
@@ -281,40 +288,40 @@ InitNeptune (void)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
-  io_addr [EN0_DCFG] = 0x49;	/* １６ビット転送、ループバック解除、FIFOスレッショルド８バイト */
+  io_addrW [EN0_DCFG] = 0x49;	/* １６ビット転送、ループバック解除、FIFOスレッショルド８バイト */
 
 
   /* リモートカウンタリセット*/
-  io_addr [EN0_RCNTLO] = 0x00;
-  io_addr [EN0_RCNTHI] = 0x00;
+  io_addrW [EN0_RCNTLO] = 0x00;
+  io_addrW [EN0_RCNTHI] = 0x00;
 
   /* 受信パケットをバッファリングしない */
-  io_addr [EN0_RXCR] = E8390_RXOFF;
+  io_addrW [EN0_RXCR] = E8390_RXOFF;
 
   /* 送信しない */
-  io_addr [EN0_TXCR] = E8390_TXOFF;
+  io_addrW [EN0_TXCR] = E8390_TXOFF;
 
 
-  io_addr [EN0_TPSR] = TX_PAGE_START;
-  io_addr [EN0_STARTPG] = REC_PAGE_START;
+  io_addrW [EN0_TPSR] = TX_PAGE_START;
+  io_addrW [EN0_STARTPG] = REC_PAGE_START;
 
-  io_addr [EN0_STOPPG] = REC_PAGE_STOP;
-  io_addr [EN0_BOUNDARY] = REC_PAGE_START;
+  io_addrW [EN0_STOPPG] = REC_PAGE_STOP;
+  io_addrW [EN0_BOUNDARY] = REC_PAGE_START;
 
-  io_addr [EN0_ISR] = 0xff;		/* 割り込みステータスリセット */
-  io_addr [EN0_IMR] = 0x00;		/* 割り込み禁止 */
+  io_addrW [EN0_ISR] = 0xff;		/* 割り込みステータスリセット */
+  io_addrW [EN0_IMR] = 0x00;		/* 割り込み禁止 */
 
   SELECT_PAGE_1 (E8390_NODMA + E8390_STOP);
 
-  io_addr [EN1_CURPAG] = ed_softc.next_packet;
+  io_addrW [EN1_CURPAG] = ed_softc.next_packet;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
   /* パケット受信許可 ＆ ブロードキャストパケット許可 */
-  io_addr [EN0_RXCR] = 0x04;
+  io_addrW [EN0_RXCR] = 0x04;
 
   /* 送信許可 */
-  io_addr [EN0_TXCR] = 0x00;
+  io_addrW [EN0_TXCR] = 0x00;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* 動作開始 */
 
@@ -342,40 +349,40 @@ EdInit (struct ed_softc* sc)
 
   sc->next_packet = REC_PAGE_START + 1;
 
-  io_addr [EN0_DCFG] = 0x49;	/* １６ビット転送、ループバック解除、FIFOスレッショルド８バイト */
+  io_addrW [EN0_DCFG] = 0x49;	/* １６ビット転送、ループバック解除、FIFOスレッショルド８バイト */
 
   /* リモートカウンタリセット*/
-  io_addr [EN0_RCNTLO] = 0x00;
-  io_addr [EN0_RCNTHI] = 0x00;
+  io_addrW [EN0_RCNTLO] = 0x00;
+  io_addrW [EN0_RCNTHI] = 0x00;
 
   /* 受信パケットをバッファリングしない */
-  io_addr [EN0_RXCR] = E8390_RXOFF;
+  io_addrW [EN0_RXCR] = E8390_RXOFF;
 
   /* 送信しない */
-  io_addr [EN0_TXCR] = E8390_TXOFF;
+  io_addrW [EN0_TXCR] = E8390_TXOFF;
 
 
-  io_addr [EN0_TPSR) = TX_PAGE_START;
-  io_addr [EN0_STARTPG) = REC_PAGE_START;
+  io_addrW [EN0_TPSR) = TX_PAGE_START;
+  io_addrW [EN0_STARTPG) = REC_PAGE_START;
 
-  io_addr [EN0_STOPPG) = REC_PAGE_STOP;
-  io_addr [EN0_BOUNDARY) = REC_PAGE_START;
+  io_addrW [EN0_STOPPG) = REC_PAGE_STOP;
+  io_addrW [EN0_BOUNDARY) = REC_PAGE_START;
 
-  io_addr [EN0_ISR) = 0xff;		/* 割り込みステータスリセット */
-  io_addr [EN0_IMR] = ENISR_RX + ENISR_TX + ENISR_RX_ERR + ENISR_TX_ERR + ENISR_OVER;
+  io_addrW [EN0_ISR) = 0xff;		/* 割り込みステータスリセット */
+  io_addrW [EN0_IMR] = ENISR_RX + ENISR_TX + ENISR_RX_ERR + ENISR_TX_ERR + ENISR_OVER;
 					/* 割り込み許可 */
 
   SELECT_PAGE_1 (E8390_NODMA + E8390_STOP);
 
-  io_addr [EN1_CURPAG] = sc->next_packet;
+  io_addrW [EN1_CURPAG] = sc->next_packet;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_STOP);
 
   /* パケット受信許可 ＆ ブロードキャストパケット許可 */
-  io_addr [EN0_RXCR] = 0x04;
+  io_addrW [EN0_RXCR] = 0x04;
 
   /* 送信許可 */
-  io_addr [EN0_TXCR] = 0x00;
+  io_addrW [EN0_TXCR] = 0x00;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);	/* 動作開始 */
 
@@ -402,18 +409,18 @@ EdPioReadMem (unsigned short src, unsigned char* dst, unsigned int len)
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
   /* Set up DMA byte count. */
-  io_addr [EN0_RCNTLO] = len & 0xff;
-  io_addr [EN0_RCNTHI] = len >> 8;
+  io_addrW [EN0_RCNTLO] = len & 0xff;
+  io_addrW [EN0_RCNTHI] = len >> 8;
 
   /* Set up destination address in NIC mem. */
-  io_addr [EN0_RSARLO] = src & 0xff;
-  io_addr [EN0_RSARHI] = src >> 8;
+  io_addrW [EN0_RSARLO] = src & 0xff;
+  io_addrW [EN0_RSARHI] = src >> 8;
 
   /* Set remote DMA read. */
-  io_addr [E8390_CMD] = E8390_RREAD + E8390_PAGE0 + E8390_START;
+  io_addrW [E8390_CMD] = E8390_RREAD + E8390_PAGE0 + E8390_START;
 
   /* NE2000受信バッファから読み込み */
-  insw ((volatile unsigned short*) &io_addr [NE_DATAPORT],
+  insw ((volatile unsigned short*) &io_addrW[NE_DATAPORT],
 				(unsigned short*) dst, len);
 
   DEBUG_KBDLED (KBDLED_HIRA | KBDLED_INS);
@@ -497,7 +504,7 @@ EdRint (struct ed_softc* sc)
 
   SELECT_PAGE_1 (E8390_NODMA + E8390_START);
 
-  while (sc->next_packet != io_addr [EN1_CURPAG])
+  while (sc->next_packet != io_addrR [EN1_CURPAG])
     {
       /* 受信バッファブロックのアドレス計算 */
       packet_ptr = MEM_RING
@@ -555,7 +562,7 @@ EdRint (struct ed_softc* sc)
 
       SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
-      io_addr [EN0_BOUNDARY] = boundary;
+      io_addrW [EN0_BOUNDARY] = boundary;
 
       /*
        * Set NIC to page 1 registers before looping to top (prepare
@@ -598,11 +605,11 @@ EdXmit (struct ed_softc* sc)
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
   /* 送信バッファスタートページ設定 */
-  io_addr [EN0_TPSR] = TX_PAGE_START + sc->txb_next_tx * ED_TXBUF_SIZE;
+  io_addrW [EN0_TPSR] = TX_PAGE_START + sc->txb_next_tx * ED_TXBUF_SIZE;
 
   /* 送信長 設定 */
-  io_addr [EN0_TCNTLO] = len & 0xff;
-  io_addr [EN0_TCNTHI] = len >> 8;
+  io_addrW [EN0_TCNTLO] = len & 0xff;
+  io_addrW [EN0_TCNTHI] = len >> 8;
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_TRANS + E8390_START);
 
@@ -632,7 +639,7 @@ NeptuneIntProcess (void)
 
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
-  isr = io_addr [EN0_ISR];		/* 割り込み原因を取得 */
+  isr = io_addrR [EN0_ISR];		/* 割り込み原因を取得 */
 
   if (!isr)
     return;	/* なにもないぞ？ */
@@ -640,15 +647,15 @@ NeptuneIntProcess (void)
   for (; ; )	/* 泣いている（ぉ */
     {
       /* 割り込み原因を リセットします */
-      io_addr [EN0_ISR] = isr;
+      io_addrW [EN0_ISR] = isr;
 
       /* 割り込み原因 は 送信完了 または 送信エラー */
       if (isr & (ENISR_TX | ENISR_TX_ERR))
 	{
 #ifdef DEBUG_INT
 	  unsigned char t;
-	  t = io_addr [EN0_NCR];	/* 衝突回数 */
-	  t = io_addr [EN0_TSR];	/* 送信ステータス */
+	  t = io_addrR [EN0_NCR];	/* 衝突回数 */
+	  t = io_addrR [EN0_TSR];	/* 送信ステータス */
 
 	  Print ((isr & ENISR_TX_ERR) ? "原因:過剰衝突orFIFOアンダーラン\r\n"	/* 送信エラー発生 */
 				      : "原因:送信完了\r\n");
@@ -686,13 +693,13 @@ NeptuneIntProcess (void)
 #if 0
       if (isr & ENISR_COUNTERS)
 	{
-	  t = io_addr [EN0_COUNTER0];
-	  t = io_addr [EN0_COUNTER1];
-	  t = io_addr [EN0_COUNTER2];
+	  t = io_addrR [EN0_COUNTER0];
+	  t = io_addrR [EN0_COUNTER1];
+	  t = io_addrR [EN0_COUNTER2];
       }
 #endif
 
-      isr = io_addr [EN0_ISR];
+      isr = io_addrR [EN0_ISR];
       if (!isr)
 	return;
 
@@ -715,21 +722,21 @@ EdPioWriteMem (const unsigned char* src, unsigned short int dst, unsigned int le
   SELECT_PAGE_0 (E8390_NODMA + E8390_START);
 
   /* Reset remote DMA complete flag. */
-  io_addr [EN0_ISR] = ENISR_RDC;
+  io_addrW [EN0_ISR] = ENISR_RDC;
 
   /* Set up DMA byte count. */
-  io_addr [EN0_RCNTLO] = len & 0xff;
-  io_addr [EN0_RCNTHI] = len >> 8;
+  io_addrW [EN0_RCNTLO] = len & 0xff;
+  io_addrW [EN0_RCNTHI] = len >> 8;
 
   /* Set up destination address in NIC mem. */
-  io_addr [EN0_RSARLO] = dst & 0xff;
-  io_addr [EN0_RSARHI] = dst >> 8;
+  io_addrW [EN0_RSARLO] = dst & 0xff;
+  io_addrW [EN0_RSARHI] = dst >> 8;
 
   /* Set remote DMA write. */
-  io_addr [E8390_CMD] = E8390_RWRITE + E8390_PAGE0 + E8390_START;
+  io_addrW [E8390_CMD] = E8390_RWRITE + E8390_PAGE0 + E8390_START;
 
   /* NE2000送信バッファへ書き込み */
-  outsw ((volatile unsigned short*) &io_addr [NE_DATAPORT],
+  outsw ((volatile unsigned short*) &io_addrW [NE_DATAPORT],
 				(const unsigned short*) src, len);
 
 
@@ -738,7 +745,7 @@ EdPioWriteMem (const unsigned char* src, unsigned short int dst, unsigned int le
   {
     int maxwait = 100;	/* about 120usらしい */
 
-    while ((io_addr [EN0_ISR] & ENISR_RDC) != ENISR_RDC && --maxwait)
+    while ((io_addrR [EN0_ISR] & ENISR_RDC) != ENISR_RDC && --maxwait)
       /* loop */;
 #if 0
     if (!maxwait)
@@ -847,13 +854,13 @@ SetPacketReception (int i)
     {
       /* 割り込み許可 */
 #if 0
-    io_addr [EN0_IMR] =		   ENISR_TX		   + ENISR_TX_ERR + ENISR_OVER;
+    io_addrW [EN0_IMR] =		   ENISR_TX		   + ENISR_TX_ERR + ENISR_OVER;
 #else
-    io_addr [EN0_IMR] = ENISR_RX + ENISR_TX + ENISR_RX_ERR + ENISR_TX_ERR + ENISR_OVER;
+    io_addrW [EN0_IMR] = ENISR_RX + ENISR_TX + ENISR_RX_ERR + ENISR_TX_ERR + ENISR_OVER;
 #endif
     }
   else
-    io_addr [EN0_IMR] = 0x00;		/* 割り込み禁止 */
+    io_addrW [EN0_IMR] = 0x00;		/* 割り込み禁止 */
 
   return 0;
 }

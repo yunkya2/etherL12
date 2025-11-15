@@ -181,7 +181,7 @@ struct trans_counter {
 extern struct trans_counter trans_counter;
 
 
-extern int SearchNeptuneX (volatile unsigned char** io_addr, unsigned int* irq);
+extern int SearchNeptuneX (volatile unsigned char** io_addrR, volatile unsigned char** io_addrW, unsigned int* irq);
 extern int InitNeptune (void);
 extern int TrapNeptuneVector (unsigned int irq, void* my_handler);
 extern int GetMacAddr (struct eaddr* buf);

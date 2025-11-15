@@ -17,7 +17,8 @@
 #include "ne2000.h"
 
 
-volatile unsigned char* io_addr;
+volatile unsigned char* io_addrR;
+volatile unsigned char* io_addrW;
 unsigned int irq;
 int trap_no;
 int num_of_prt;
@@ -124,7 +125,7 @@ Initialize (void)
   unsigned char buff [128], buff2 [32];
   struct eaddr ether_addr;
 
-  if (SearchNeptuneX (&io_addr, &irq))
+  if (SearchNeptuneX (&io_addrR, &io_addrW, &irq))
     {
       Print ("Neptune-X の存在を確認できませんでした\r\n");
       return -1;
@@ -154,7 +155,7 @@ Initialize (void)
     sprintf (buff, "\tAPI trap number:\tn/a\r\n");
   Print (buff);
 
-  sprintf (buff, "\tNeptune-X Based Addr:\t%6.6x\r\n", (unsigned int) io_addr);
+  sprintf (buff, "\tNeptune-X Based Addr:\t%6.6x\r\n", (unsigned int) io_addrW);
   Print (buff);
   sprintf (buff, "\tNeptune-X Irq Vector:\t%x\r\n", irq);
   Print (buff);
