@@ -29,6 +29,20 @@ void *_HSTA = heap;
 void *_HEND = heap + 1024;
 void *_PSP;
 
+#include <stdarg.h>
+
+void DPRINTF(char *fmt, ...)
+{
+  char buf[256];
+  va_list ap;
+
+  va_start(ap, fmt);
+  vsiprintf(buf, fmt, ap);
+  va_end(ap);
+  _iocs_b_print(buf);
+}
+
+
 /* マルチキャスト（未対応） */
 #ifdef MULTICAST
 int num_of_multicast;

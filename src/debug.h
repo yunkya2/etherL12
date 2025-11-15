@@ -24,6 +24,7 @@ debug_printf (const char* fmt, ...)
 #define DEBUG_PRINTF(args)
 #endif
 
+void DPRINTF(char *fmt, ...);
 
 #define KBDLED_OFF	0x00
 #define KBDLED_KANA	0x01
