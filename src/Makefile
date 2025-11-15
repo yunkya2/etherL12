@@ -4,7 +4,7 @@
 # make led でデバッグ用バイナリ（キーボードLED点灯版）作成
 
 LED_TARGET = dbgLED.sys
-TARGET = etherL12.sys
+TARGET = etherL12wa.sys
 #TARGET = ether_ne.sys
 
 CROSS = m68k-xelf-
@@ -52,7 +52,7 @@ main.o: main.c main.h ne2000.h
 asmsub.o: asmsub.S
 
 clean:
-	-rm -f $(OBJS) $(TARGET)
+	-rm -f $(OBJS) $(TARGET) $(TARGET).elf
 
 .PHONY: all clean
 # EOF
